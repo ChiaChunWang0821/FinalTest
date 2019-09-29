@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Final</string>
+    <string name="bluetooth_name">Settings</string>
+    <string name="help_name">Help</string>
+    <string name="settings_name">Settings</string>
+    <string name="update_name">Check for updates</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+</resources>

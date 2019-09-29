@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/start_game"
+            android:title="Start Game"
+            android:icon="@drawable/ic_action_gamepad">
+        </item>
+        <item
+            android:id="@+id/challenge_mode"
+            android:title="Challenge Mode"
+            android:icon="@drawable/ic_action_gamepad">
+        </item>
+    </group>
+</menu>
