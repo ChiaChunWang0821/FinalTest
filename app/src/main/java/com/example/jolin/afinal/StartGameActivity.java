@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -75,6 +76,14 @@ public class StartGameActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        /*----將變數綁向layout中物件----*/
+        Toolbar toolbar = findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         btnConnect = (Button) findViewById(R.id.connect);
         btnDisconnect = (Button) findViewById(R.id.disconnect);
 
