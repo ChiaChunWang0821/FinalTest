@@ -44,7 +44,7 @@ class CameraTopRectView extends View {
 
     private static final int LEFT_PADDING = 10;
     private static final int RIGHT_PADDING = 10;
-    private static final String TIPS = "请将身份证放入到方框中";
+    private static final String TIPS = "請將五官清楚顯示在螢幕中";
 
     private Paint linePaint;
     private Paint wordPaint;
@@ -108,7 +108,7 @@ class CameraTopRectView extends View {
         canvas.drawRect(rect, wordPaint);
 
         //画蒙层
-        wordPaint.setColor(0xa0000000);
+        //wordPaint.setColor(0xa0000000);
         rect = new Rect(0, viewHeight/2+rectHeght/2, viewWidth, viewHeight);
         canvas.drawRect(rect, wordPaint);
 
@@ -126,22 +126,8 @@ class CameraTopRectView extends View {
         rect = new Rect(rectLeft, rectTop - 80, rectRight, rectTop - 10);
         wordPaint.setColor(Color.WHITE);
         canvas.drawText(TIPS, rect.centerX(), baseline, wordPaint);
-        canvas.drawLine(rectLeft, rectTop, rectLeft + lineLen, rectTop,
-                linePaint);
-        canvas.drawLine(rectRight - lineLen, rectTop, rectRight, rectTop,
-                linePaint);
-        canvas.drawLine(rectLeft, rectTop, rectLeft, rectTop + lineLen,
-                linePaint);
-        canvas.drawLine(rectRight, rectTop, rectRight, rectTop + lineLen,
-                linePaint);
-        canvas.drawLine(rectLeft, rectBottom, rectLeft + lineLen, rectBottom,
-                linePaint);
-        canvas.drawLine(rectRight - lineLen, rectBottom, rectRight, rectBottom,
-                linePaint);
-        canvas.drawLine(rectLeft, rectBottom - lineLen, rectLeft, rectBottom,
-                linePaint);
-        canvas.drawLine(rectRight, rectBottom - lineLen, rectRight, rectBottom,
-                linePaint);
+        canvas.drawText(Integer.toString(viewWidth),rect.centerX(),baseline-50,wordPaint);
+        canvas.drawText(Integer.toString(viewHeight),rect.centerX(),baseline-100,wordPaint);
     }
 
     public int getRectLeft() {

@@ -15,15 +15,11 @@ import android.view.SurfaceView;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-
 
 /**
  * Created by Administrator on 2017/2/15 0015.//自定义相机
@@ -34,19 +30,18 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
     private Context mContext;
     private SurfaceHolder holder;
-    private static Camera mCamera;
+    private Camera mCamera;
 
+    private MainActivity mmain;
     private int mScreenWidth;
     private int mScreenHeight;
-    private static CameraTopRectView topView;
+    private CameraTopRectView topView;
 
     //更動
     private String filePath;
-    private static String ReceivefilePath;
-    private static Activity activity;
+    private Activity activity;
 
     private static byte[] byteFile;
-    private static byte[] receivedData;
 
     public CameraSurfaceView(Context context) {
         this(context, null);
@@ -63,6 +58,8 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         topView = new CameraTopRectView(context, attrs);
 
         initView();
+
+
     }
 
     //拿到手机屏幕大小
@@ -79,6 +76,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         holder = getHolder();//获得surfaceHolder引用
         holder.addCallback(this);
 //        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);//设置类型
+
     }
 
     @Override
@@ -102,6 +100,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         setCameraParams(mCamera, mScreenWidth, mScreenHeight);
         mCamera.startPreview();
 //        mCamera.takePicture(null, null, jpeg);
+
     }
 
     @Override
@@ -120,6 +119,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
             System.out.println(success);
         }
     }
+
 
     private void setCameraParams(Camera camera, int width, int height) {
         Log.i(TAG, "setCameraParams  width=" + width + "  height=" + height);
@@ -143,8 +143,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         this.setLayoutParams(new FrameLayout.LayoutParams((int) (height * (h / w)), height));
 
         // 获取摄像头支持的PreviewSize列表
-        // List<Camera.Size> previewSizeList = parameters.getSupportedPreviewSizes();
-        List<Camera.Size> previewSizeList = mCamera.getParameters().getSupportedPictureSizes();
+        List<Camera.Size> previewSizeList = parameters.getSupportedPreviewSizes();
 
         for (Camera.Size size : previewSizeList) {
             Log.i(TAG, "previewSizeList size.width=" + size.width + "  size.height=" + size.height);
@@ -192,6 +191,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 }
             }
         }
+
         return result;
     }
 
@@ -222,11 +222,14 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
         @Override
         public void onPictureTaken(byte[] data, Camera Camera) {
+
+
             topView.draw(new Canvas());
 
             BufferedOutputStream bos = null;
             Bitmap bm = null;
             if (data != null) {
+
             }
 
             try {
@@ -244,6 +247,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 //旋转后的图片
                 bitmap = Bitmap.createBitmap(bm, 0, 0, width, height, m, true);
 
+
                 System.out.println("执行了吗+3");
                 File file = new File(filePath);
                 if (!file.exists()) {
@@ -258,16 +262,9 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 bm.compress(Bitmap.CompressFormat.JPEG, 100, bos);//将图片压缩到流中
 
                 byteFile = new byte[bm.getByteCount()];
-                if(byteFile != null)
-                {
-                    System.out.println("byteFile is NOT null!!!!!!");
-                    System.out.println(byteFile);
-                    sendToServer(byteFile);
-                    System.out.println("send SUCCESS!!!!!!!!");
-                }
+                // Client.setByteArray(byteFile);
+                // sendFileToServer(mmain.socket, byteFile);
 
-                // sendFileToServer(byteFile);
-                // receiveFileFromServer();
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -283,6 +280,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                     e.printStackTrace();
                 }
             }
+
         }
     };
 
@@ -298,120 +296,21 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
     }
 
-    public void sendToServer(byte[] bytefile)
-    {
-        ByteArrayInputStream byteArrayInputStream = null;
-        BufferedInputStream bufferedInputStream = null;
-
-        int tmp;
-        try {
-            byteArrayInputStream = new ByteArrayInputStream(bytefile);
-            bufferedInputStream = new BufferedInputStream(byteArrayInputStream);
-
-            while(bufferedInputStream.read(bytefile)!=-1) {
-                Client.sendMessage(new ChatMessage(ChatMessage.IMAGE, bytefile));
-            }
-            /*while((tmp = bufferedInputStream.read(bytefile))!=-1) {
-                System.out.println("tmp" + tmp);
-                Client.sendMessage(new ChatMessage(ChatMessage.IMAGE, new String(bytefile, 0, tmp)));
-            }*/
-            // Client.sendMessage(new ChatMessage(ChatMessage.MESSAGE, "plzzzzzzzzzzzzzzzzzz"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                bufferedInputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    public static byte[] getByteArray(){
+        return byteFile;
     }
 
-    public void sendFileToServer(byte[] byteFile)
+    /*public void sendFileToServer(Socket c1, byte[] byteFile)
     {
         try {
-            /*OutputStream os = GetSocket.getSocket().getOutputStream();
+            OutputStream os = c1.getOutputStream();
             os.write(byteFile);
             os.flush();
-            os.close();*/
-
-            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(GetSocket.getSocket().getOutputStream());
-            bufferedOutputStream.write(byteFile, 0, byteFile.length);
-            bufferedOutputStream.flush();
-            bufferedOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-
-    public static void receiveFileFromServer()
-    {
-        Bitmap receivebitmap;
-        BufferedOutputStream receivebos = null;
-        Bitmap receivebm = null;
-        System.out.println(GetSocket.getSocket());
-        try {
-            receivedData = new byte[1704960];
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(GetSocket.getSocket().getInputStream());
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            int bytes;
-            while ((bytes = bufferedInputStream.read(byteFile)) != -1)
-                byteArrayOutputStream.write(byteFile, 0, bytes);
-
-            bufferedInputStream.close();
-
-            receivedData = byteArrayOutputStream.toByteArray();
-
-            if(receivedData != null) {
-                System.out.println(receivedData);
-            }
-
-            receivebm = BitmapFactory.decodeByteArray(receivedData, 0, receivedData.length);
-
-            Matrix m = new Matrix();
-            int height = receivebm.getHeight();
-            int width = receivebm.getWidth();
-            receivebitmap = Bitmap.createBitmap(receivebm, 0, 0, width, height, m, true);
-
-            File file = new File(ReceivefilePath);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            receivebos = new BufferedOutputStream(new FileOutputStream(file));
-
-            Bitmap sizeBitmap = Bitmap.createScaledBitmap(receivebitmap,
-                    topView.getViewWidth(), topView.getViewHeight(), true);
-            receivebm = Bitmap.createBitmap(sizeBitmap);// 截取
-
-            // receivebm.compress(Bitmap.CompressFormat.JPEG, 100, receivebos);
-
-            final BufferedOutputStream finalReceivebos = receivebos;
-            final Bitmap finalReceivebm = receivebm;
-            Thread re = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    finalReceivebm.compress(Bitmap.CompressFormat.JPEG, 100, finalReceivebos);
-                }
-            });
-            byteArrayOutputStream.close();
-
-        } catch (IOException e) {
-
-        }finally {
-            try {
-                receivebos.flush();//输出
-                receivebos.close();//关闭
-                receivebm.recycle();// 回收bitmap空间
-                mCamera.stopPreview();// 关闭预览
-                activity.setResult(Activity.RESULT_OK);
-                activity.finish();
-//                    mCamera.startPreview();// 开启预览
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+    }*/
 }

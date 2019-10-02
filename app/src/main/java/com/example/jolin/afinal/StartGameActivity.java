@@ -36,7 +36,6 @@ import java.util.concurrent.Executors;
 
 public class StartGameActivity extends AppCompatActivity {
     private Handler mMainHandler;
-    public Socket socket;
     private ExecutorService mThreadPool;
 
     private Activity activity;
@@ -47,7 +46,7 @@ public class StartGameActivity extends AppCompatActivity {
     private Button btnDisconnect;
     private Button mBtnPic;
     private ImageView mShowImage;
-    private ImageView mShowreceiveImage;
+    private ImageView mShowReceiveImage;
     String imageFilePath;
     String imageFilereceivePath;
     private boolean isCameraPermission = false;
@@ -59,6 +58,8 @@ public class StartGameActivity extends AppCompatActivity {
     private Camera mCamera;
 
     private String ReceivefilePath;
+
+    private Client client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +90,7 @@ public class StartGameActivity extends AppCompatActivity {
 
         mBtnPic = (Button) findViewById(R.id.btn_take_pic);
         mShowImage = (ImageView) findViewById(R.id.show_image);
-        mShowreceiveImage = (ImageView) findViewById(R.id.receive_image);
+        mShowReceiveImage = (ImageView) findViewById(R.id.receive_image);
 
         mThreadPool = Executors.newCachedThreadPool();
 
@@ -105,16 +106,8 @@ public class StartGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                // 利用线程池直接开启一个线程 & 执行该线程
-                mThreadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        Client.connect();
-                        Looper.prepare();
-                        Toast.makeText(getApplicationContext(), "Connect SUCCESS!", Toast.LENGTH_LONG).show();
-                        Looper.loop();
-                    }
-                });
+                client = new Client();
+                Toast.makeText(getApplicationContext(), "Connect SUCCESS!", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -128,8 +121,7 @@ public class StartGameActivity extends AppCompatActivity {
         btnDisconnect.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Client.disconnect();
+                client.stop();
                 Toast.makeText(getApplicationContext(), "Connect ENDED!", Toast.LENGTH_LONG).show();
             }
         });
@@ -248,8 +240,8 @@ public class StartGameActivity extends AppCompatActivity {
 
     private void setreceivePic(String mCurrentPhotoPath) {
         // Get the dimensions of the View
-        int targetW = mShowreceiveImage.getWidth();
-        int targetH = mShowreceiveImage.getHeight();
+        int targetW = mShowReceiveImage.getWidth();
+        int targetH = mShowReceiveImage.getHeight();
 
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -267,6 +259,6 @@ public class StartGameActivity extends AppCompatActivity {
         bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        mShowreceiveImage.setImageBitmap(bitmap);
+        mShowReceiveImage.setImageBitmap(bitmap);
     }
 }
