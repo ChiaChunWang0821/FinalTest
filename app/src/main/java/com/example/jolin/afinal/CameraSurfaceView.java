@@ -302,15 +302,4 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     public static byte[] getByteArray(){
         return byteFile;
     }
-
-    /*public void sendFileToServer(Socket c1, byte[] byteFile)
-    {
-        try {
-            OutputStream os = c1.getOutputStream();
-            os.write(byteFile);
-            os.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
 }
