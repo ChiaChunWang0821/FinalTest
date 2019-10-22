@@ -1,6 +1,5 @@
 package com.example.jolin.afinal;
 
-import android.support.v7.app.AppCompatActivity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -11,8 +10,6 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -29,7 +26,6 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -50,16 +46,11 @@ public class StartGameActivity extends AppCompatActivity {
     private ImageView mShowImage;
     private ImageView mShowReceiveImage;
     String imageFilePath;
-    String imageFilereceivePath;
+    public static String imageFileReceivePath;
     private boolean isCameraPermission = false;
-
-    private byte[] byteFile;
-    private byte[] receivedData;
 
     private CameraTopRectView topView;
     private Camera mCamera;
-
-    private String ReceivefilePath;
 
     private Client client;
 
@@ -123,7 +114,7 @@ public class StartGameActivity extends AppCompatActivity {
             }
         };*/
 
-       startbar = (ProgressBar) findViewById(R.id.startbar);
+        startbar = (ProgressBar) findViewById(R.id.startbar);
         bar = (ProgressBar) findViewById(R.id.Bar2);
         bar3 = (ProgressBar) findViewById(R.id.bar3);
         bar4 = (ProgressBar) findViewById(R.id.bar4);
@@ -211,12 +202,31 @@ public class StartGameActivity extends AppCompatActivity {
         return image;
     }
 
+    //創造檔案名稱、和存擋路徑
+    private File createReceiveImageFile() throws IOException {
+        String timeStamp =
+                new SimpleDateFormat("yyyyMMdd_HHmmss",
+                        Locale.getDefault()).format(new Date());
+        String imageFileName = "IMG_R" + timeStamp + "_";
+        File storageDir =
+                getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        imageFileReceivePath = image.getAbsolutePath();
+        return image;
+    }
+
     private void openCamera() {
         //已獲得權限
         if (isCameraPermission) {
             File photoFile = null;
+            File photoReceiveFile = null;
             try {
                 photoFile = createImageFile();
+                photoReceiveFile = createReceiveImageFile();
             } catch (IOException e) {
                 Log.d("checkpoint", "error for createImageFile 創建路徑失敗");
             }
@@ -225,6 +235,15 @@ public class StartGameActivity extends AppCompatActivity {
                 Intent intent = new Intent(StartGameActivity.this, TakePicActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("url", photoFile.getAbsolutePath());
+                intent.putExtras(bundle);
+                startActivityForResult(intent, GetPhotoCode);
+            }
+
+            //成功創建路徑的話
+            if (photoReceiveFile != null) {
+                Intent intent = new Intent(StartGameActivity.this, TakePicActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("url", photoReceiveFile.getAbsolutePath());
                 intent.putExtras(bundle);
                 startActivityForResult(intent, GetPhotoCode);
             }
@@ -257,7 +276,7 @@ public class StartGameActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GetPhotoCode) {
             setPic(imageFilePath);
-            setreceivePic(imageFilePath);
+            setreceivePic(imageFileReceivePath);
         }
     }
 
@@ -403,13 +422,11 @@ public class StartGameActivity extends AppCompatActivity {
 
             /*陣列1
             int w=0;
-
             if(o<=120)
                  w=0;
             if(o>120){
                 w=1;
             }
-
             */
 
             /*陣列1*/

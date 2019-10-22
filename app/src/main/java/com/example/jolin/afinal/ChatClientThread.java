@@ -1,7 +1,7 @@
 package com.example.jolin.afinal;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,12 +21,15 @@ public class ChatClientThread extends Thread {
     public ChatClientThread(Client _client, Socket _socket) {
         client = _client;
         socket = _socket;
+        System.out.println("333333333333333333333333333");
         open();
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         start();
     }
 
     public void open() {
         try {
+            System.out.println("666666666666666666666666666");
             // dis = new DataInputStream(socket.getInputStream());
             os = socket.getOutputStream();
             is = socket.getInputStream();
@@ -58,14 +61,26 @@ public class ChatClientThread extends Thread {
             /*while (true) {
                 client.handleMessage(dis.readUTF());
             }*/
+            System.out.println("??????????????????????????");
             while((readLength = is.read()) != -1){
                 baos.write(getByteArray(), 0, readLength);
             }
+            System.out.println("8888888888888888888888888888888");
             byteArray = baos.toByteArray();
+            System.out.println("receive");
+            createFile(StartGameActivity.imageFileReceivePath, byteArray);
             System.out.println(byteArray);
+            // System.out.println(byteArray.length);
         } catch (IOException e) {
             client.stop();
         }
 
+    }
+
+    //將byte陣列寫入檔案
+    public void createFile(String path, byte[] content) throws IOException {
+        FileOutputStream fos = new FileOutputStream(path);
+        fos.write(content);
+        fos.close();
     }
 }

@@ -1,8 +1,6 @@
 package com.example.jolin.afinal;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -47,23 +45,23 @@ public class Client implements Runnable {
     @Override
     public void run() {
         while (thread != null) {
-            try {
-                System.out.print("Transfer image to server...");
-                // dos.writeUTF(dis.readLine());
-                // dos.flush();
-                while((readLength = is.read(byteArray))!= -1){
+            System.out.print("Transfer image to server...");
+            // dos.writeUTF(dis.readLine());
+            // dos.flush();
+                /*while((readLength = is.read(byteArray))!= -1){
                     baos.write(setByteArray(), 0, readLength);
-                }
+                }*/
+            while(setByteArray()){
+                System.out.print("mmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
+                baos.write(getByteArray(), 0, readLength);
+            }
+            System.out.print("444444444444444444444444444444444444");
 
-                // Sleep, because this thread must wait ChatClientThread to show the message first
-                try {
-                    thread.sleep(500);
-                } catch (InterruptedException e) {
-                    System.out.println("Error : " + e.getMessage());
-                }
-            } catch (IOException e) {
-                System.out.println("Sending error : " + e.getMessage());
-                stop();
+            // Sleep, because this thread must wait ChatClientThread to show the message first
+            try {
+                thread.sleep(500);
+            } catch (InterruptedException e) {
+                System.out.println("Error : " + e.getMessage());
             }
         }
     }
@@ -77,14 +75,22 @@ public class Client implements Runnable {
         }
     }*/
 
-    public byte[] setByteArray(){
+    /*public byte[] setByteArray(){
         byteArray = CameraSurfaceView.getByteArray();
         return byteArray;
+    }*/
+
+    public boolean setByteArray(){
+        byteArray = CameraSurfaceView.getByteArray();
+        if(byteArray != null)
+            return true;
+        else
+            return false;
     }
 
-    /*public byte[] getByteArray(){
+    public byte[] getByteArray(){
         return byteArray;
-    }*/
+    }
 
     public void stop() {
         try {
