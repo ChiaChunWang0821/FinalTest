@@ -51,10 +51,22 @@ public class Client implements Runnable {
                 /*while((readLength = is.read(byteArray))!= -1){
                     baos.write(setByteArray(), 0, readLength);
                 }*/
-            while(setByteArray()){
+                /*while(setByteArray()){
                 System.out.print("mmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
                 baos.write(getByteArray(), 0, readLength);
+            }*/
+
+            try {
+                while(setByteArray()){
+                    while((readLength = is.read(getByteArray()))!= -1){
+                        System.out.print("mmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
+                        baos.write(getByteArray(), 0, readLength);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
             System.out.print("444444444444444444444444444444444444");
 
             // Sleep, because this thread must wait ChatClientThread to show the message first

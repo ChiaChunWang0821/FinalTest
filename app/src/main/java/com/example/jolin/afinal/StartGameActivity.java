@@ -240,13 +240,13 @@ public class StartGameActivity extends AppCompatActivity {
             }
 
             //成功創建路徑的話
-            if (photoReceiveFile != null) {
+            /*if (photoReceiveFile != null) {
                 Intent intent = new Intent(StartGameActivity.this, TakePicActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("url", photoReceiveFile.getAbsolutePath());
                 intent.putExtras(bundle);
                 startActivityForResult(intent, GetPhotoCode);
-            }
+            }*/
         }
         //沒有獲得權限
         else {
