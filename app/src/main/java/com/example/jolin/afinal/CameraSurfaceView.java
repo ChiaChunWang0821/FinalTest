@@ -300,6 +300,12 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     }
 
     public static byte[] getByteArray(){
-        return byteFile;
+        while(true){
+            if(byteFile != null){
+                System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+                System.out.println(byteFile);
+                return byteFile;
+            }
+        }
     }
 }

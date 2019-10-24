@@ -17,19 +17,18 @@ public class ChatClientThread extends Thread {
     private ByteArrayOutputStream baos = null;
     private int readLength = 0;
     private static byte[] byteArray;
+    private byte[] buffer = new byte[1024];
 
     public ChatClientThread(Client _client, Socket _socket) {
         client = _client;
         socket = _socket;
-        System.out.println("333333333333333333333333333");
         open();
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhh");
         start();
     }
 
     public void open() {
         try {
-            System.out.println("666666666666666666666666666");
             // dis = new DataInputStream(socket.getInputStream());
             os = socket.getOutputStream();
             is = socket.getInputStream();
@@ -57,20 +56,22 @@ public class ChatClientThread extends Thread {
 
     @Override
     public void run() {
+        System.out.print("----------------ChatClientThread----------------");
         try {
             /*while (true) {
                 client.handleMessage(dis.readUTF());
             }*/
-            System.out.println("??????????????????????????");
-            while((readLength = is.read()) != -1){
-                baos.write(getByteArray(), 0, readLength);
+
+            /*從Server傳入影像byte，再輸出成file*/
+            while (true){
+                while((readLength = is.read(buffer)) != -1){
+                    baos.write(buffer, 0, readLength);
+                }
+                System.out.println("8888888888888888888888888888888");
+                byteArray = baos.toByteArray();
+                System.out.println(byteArray);
+                createFile(StartGameActivity.imageFileReceivePath, byteArray);
             }
-            System.out.println("8888888888888888888888888888888");
-            byteArray = baos.toByteArray();
-            System.out.println("receive");
-            createFile(StartGameActivity.imageFileReceivePath, byteArray);
-            System.out.println(byteArray);
-            // System.out.println(byteArray.length);
         } catch (IOException e) {
             client.stop();
         }
