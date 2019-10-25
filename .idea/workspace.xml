@@ -60,9 +60,9 @@
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/CameraSurfaceView.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/CameraSurfaceView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/ChatClientThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/ChatClientThread.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/StartGameActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/StartGameActivity.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -90,33 +90,39 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/StartGameActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="179">
-              <caret line="221" column="27" selection-start-line="221" selection-start-column="17" selection-end-line="221" selection-end-column="27" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/Client.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1450">
-              <caret line="78" selection-start-line="78" selection-end-line="78" />
+            <state relative-caret-position="237">
+              <caret line="213" column="28" selection-start-line="213" selection-start-column="8" selection-end-line="213" selection-end-column="28" />
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#3720#3721#0" expanded="true" />
-                <element signature="e#3780#3781#0" expanded="true" />
-                <element signature="e#4009#4010#0" expanded="true" />
-                <element signature="e#4041#4042#0" expanded="true" />
+                <element signature="e#4731#4910#0" expanded="true" />
+                <element signature="e#4909#4910#0" expanded="true" />
+                <element signature="e#12499#17270#0" expanded="true" />
+                <element signature="e#17269#17270#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/Client.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="637">
+              <caret line="72" selection-start-line="72" selection-end-line="72" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#4811#4812#0" expanded="true" />
+                <element signature="e#4871#4872#0" expanded="true" />
+                <element signature="e#5100#5101#0" expanded="true" />
+                <element signature="e#5132#5133#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/ChatClientThread.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="19">
-              <caret line="57" column="23" lean-forward="true" selection-start-line="57" selection-start-column="23" selection-end-line="58" selection-end-column="77" />
+            <state relative-caret-position="33">
+              <caret line="66" column="41" selection-start-line="66" selection-start-column="41" selection-end-line="66" selection-end-column="41" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -125,15 +131,13 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/CameraSurfaceView.java">
+        <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="103">
-              <caret line="306" column="32" selection-start-line="306" selection-start-column="32" selection-end-line="306" selection-end-column="32" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="33">
+              <caret line="7" column="64" selection-start-line="7" selection-start-column="64" selection-end-line="7" selection-end-column="64" />
             </state>
           </provider>
+          <provider editor-type-id="android-manifest" />
         </entry>
       </file>
     </leaf>
@@ -162,16 +166,17 @@
       <find>mShowReceiveImage</find>
       <find>???</find>
       <find>show_image</find>
-      <find>imageFilePath</find>
       <find>byteFile</find>
       <find>receivedData</find>
       <find>ReceivefilePath</find>
       <find>photoFile</find>
       <find>setPic</find>
       <find>createImageFile</find>
-      <find>openCamera</find>
       <find>getByteArray</find>
       <find>bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</find>
+      <find>openCamera</find>
+      <find>getApplicationContext</find>
+      <find>imageFilePath</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -192,10 +197,10 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_start_game.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/QuickActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/CameraTopRectView.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/StartGameActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/CameraSurfaceView.java" />
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/Client.java" />
+        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/StartGameActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/ChatClientThread.java" />
       </list>
     </option>
@@ -410,7 +415,7 @@
       <window_info anchor="bottom" id="Event Log" order="4" sideWeight="0.5004042" side_tool="true" weight="0.81632656" />
       <window_info anchor="bottom" id="Build" order="5" weight="0.30241188" />
       <window_info anchor="bottom" id="Android Profiler" order="6" weight="0.3283859" />
-      <window_info active="true" anchor="bottom" id="Run" order="7" sideWeight="0.4995958" visible="true" weight="0.3283859" />
+      <window_info active="true" anchor="bottom" id="Run" order="7" sideWeight="0.4995958" visible="true" weight="0.2987013" />
       <window_info anchor="bottom" id="Debug" order="8" />
       <window_info anchor="bottom" id="Find" order="9" />
       <window_info anchor="right" id="Device File Explorer" order="0" side_tool="true" />
@@ -641,49 +646,55 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/CameraSurfaceView.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="306" column="32" selection-start-line="306" selection-start-column="32" selection-end-line="306" selection-end-column="32" />
+        <state relative-caret-position="-11">
+          <caret line="299" column="5" selection-start-line="299" selection-start-column="5" selection-end-line="299" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/StartGameActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="179">
-          <caret line="221" column="27" selection-start-line="221" selection-start-column="17" selection-end-line="221" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="7" column="29" lean-forward="true" selection-start-line="7" selection-start-column="29" selection-end-line="7" selection-end-column="29" />
+        <state relative-caret-position="33">
+          <caret line="7" column="64" selection-start-line="7" selection-start-column="64" selection-end-line="7" selection-end-column="64" />
         </state>
       </provider>
       <provider editor-type-id="android-manifest" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/Client.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/StartGameActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1450">
-          <caret line="78" selection-start-line="78" selection-end-line="78" />
+        <state relative-caret-position="237">
+          <caret line="213" column="28" selection-start-line="213" selection-start-column="8" selection-end-line="213" selection-end-column="28" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#3720#3721#0" expanded="true" />
-            <element signature="e#3780#3781#0" expanded="true" />
-            <element signature="e#4009#4010#0" expanded="true" />
-            <element signature="e#4041#4042#0" expanded="true" />
+            <element signature="e#4731#4910#0" expanded="true" />
+            <element signature="e#4909#4910#0" expanded="true" />
+            <element signature="e#12499#17270#0" expanded="true" />
+            <element signature="e#17269#17270#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/ChatClientThread.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19">
-          <caret line="57" column="23" lean-forward="true" selection-start-line="57" selection-start-column="23" selection-end-line="58" selection-end-column="77" />
+        <state relative-caret-position="33">
+          <caret line="66" column="41" selection-start-line="66" selection-start-column="41" selection-end-line="66" selection-end-column="41" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/Client.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="637">
+          <caret line="72" selection-start-line="72" selection-end-line="72" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#4811#4812#0" expanded="true" />
+            <element signature="e#4871#4872#0" expanded="true" />
+            <element signature="e#5100#5101#0" expanded="true" />
+            <element signature="e#5132#5133#0" expanded="true" />
           </folding>
         </state>
       </provider>

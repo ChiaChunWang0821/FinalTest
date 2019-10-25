@@ -2,8 +2,6 @@ package com.example.jolin.afinal;
 
 import android.os.Environment;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,8 +20,8 @@ public class Client implements Runnable {
     // private DataOutputStream dos = null;
     private OutputStream os = null;
     private InputStream is = null;
-    private ByteArrayInputStream bais = null;
-    private ByteArrayOutputStream baos = null;
+    // private ByteArrayInputStream bais = null;
+    // private ByteArrayOutputStream baos = null;
     private ChatClientThread client = null;
     private int readLength = 0;
     private byte[] buffer;
@@ -38,12 +36,14 @@ public class Client implements Runnable {
             // test();
             // dis = new DataInputStream(System.in);
             // dos = new DataOutputStream(socket.getOutputStream());
-            os = socket.getOutputStream();
-            is = socket.getInputStream();
-            bais = null;
-            baos = new ByteArrayOutputStream();
+            // os = socket.getOutputStream();
+            os = null;
+            // is = socket.getInputStream();
+            is = null;
+            // bais = null;
+            // baos = new ByteArrayOutputStream();
             buffer = null;
-            System.out.println("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
+            System.out.println("---------------1111111111111111----------------");
             client = new ChatClientThread(this, socket);
             thread = new Thread(this);
             thread.start();
@@ -65,19 +65,38 @@ public class Client implements Runnable {
             }*/
 
             /*將影像byte讀入，再傳出到Server端*/
-            setByteArray();
-            bais = new ByteArrayInputStream(getByteArray());
-            while ((readLength = bais.read()) != -1) {
-                System.out.println("///////////////////////GGGGGGGGGGGGGGG////////////////////////");
-                try {
+            try {
+                os = socket.getOutputStream();
+                is = new FileInputStream(StartGameActivity.imageFilePath); //Gets the true path of your image
+                System.out.println("--------------888888888888888888888----------------");
+                while ((readLength = is.read()) != -1) {
                     os.write(readLength); //Writes bytes to output stream
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("--------------999999999999999999999----------------");
                 }
+                /*try {
+                    try {
+                        while ((readLength = is.read()) != -1) {
+                            os.write(readLength); //Writes bytes to output stream
+                            System.out.println("--------------999999999999999999999----------------");
+                        }
+                    } finally {
+                        System.out.println("--------------000000000000000000----------------");
+                        //Flushes and closes socket
+                        os.flush();
+                        os.close();
+                    }
+                } finally {
+                    System.out.println("--------------zzzzzzzzzzzzzzzzzzz----------------");
+                    is.close();
+                }*/
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("--------------yyyyyyyyyyyyyyyyyyyyyyyy----------------");
             }
 
-
-            /*System.out.println("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+            /*setByteArray();
+            bais = new ByteArrayInputStream(getByteArray());
+            System.out.println("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
             while((readLength = bais.read(buffer, 0, getByteArray().length))!= -1){
                 System.out.print("mmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
                 baos.write(buffer, 0, readLength);
@@ -125,8 +144,8 @@ public class Client implements Runnable {
             // dos.close();
             os.close();
             is.close();
-            bais.close();
-            baos.close();
+            // bais.close();
+            // baos.close();
             socket.close();
         } catch (IOException e) {
             System.out.println("Error closing : " + e.getMessage());

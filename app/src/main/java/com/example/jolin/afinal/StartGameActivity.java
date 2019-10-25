@@ -45,7 +45,7 @@ public class StartGameActivity extends AppCompatActivity {
     private Button mBtnPic;
     private ImageView mShowImage;
     private ImageView mShowReceiveImage;
-    String imageFilePath;
+    public static String imageFilePath;
     public static String imageFileReceivePath;
     private boolean isCameraPermission = false;
 
@@ -187,12 +187,9 @@ public class StartGameActivity extends AppCompatActivity {
 
     //創造檔案名稱、和存擋路徑
     private File createImageFile() throws IOException {
-        String timeStamp =
-                new SimpleDateFormat("yyyyMMdd_HHmmss",
-                        Locale.getDefault()).format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "IMG_" + timeStamp + "_";
-        File storageDir =
-                getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -203,17 +200,16 @@ public class StartGameActivity extends AppCompatActivity {
     }
 
     //創造檔案名稱、和存擋路徑
-    private File createReceiveImageFile() throws IOException {
+    public File createReceiveImageFile() throws IOException {
         String timeStamp =
                 new SimpleDateFormat("yyyyMMdd_HHmmss",
                         Locale.getDefault()).format(new Date());
         String imageFileName = "IMG_R" + timeStamp + "_";
-        File storageDir =
-                getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
+                imageFileName,  // prefix
+                ".jpg",         // suffix
+                storageDir      // directory
         );
         imageFileReceivePath = image.getAbsolutePath();
         return image;
