@@ -8,7 +8,6 @@ import java.net.Socket;
 
 public class Client implements Runnable {
 
-    private int byteInt = 64;
     private String serverName = "140.121.197.165";
     private int serverPort = 5002;
     private Socket socket = null;
@@ -18,7 +17,8 @@ public class Client implements Runnable {
     private DataOutputStream dos = null;
     private FileInputStream fis = null;
     private ChatClientThread client = null;
-    private byte[] buffer = new byte [1024];
+    private byte[] buffer;
+    private int photoCount = 0;
 
     public Client() {
         try {
@@ -39,14 +39,15 @@ public class Client implements Runnable {
     public void run() {
         System.out.print("----------------ClientThread----------------");
         while (thread != null) {
-            System.out.print("Transfer image to server...");
-
-            /*將影像byte讀入，再傳出到Server端*/
+            if(photoCount != 0){
+                break;
+            }
+           /*將影像byte讀入，再傳出到Server端*/
             try {
                 fis = new FileInputStream(StartGameActivity.imageFilePath);
                 dos = new DataOutputStream(os);
                 dos.writeInt(StartGameActivity.imageFilePath.length());
-                System.out.println(StartGameActivity.imageFilePath.length());
+                System.out.println("Send image file length: " + StartGameActivity.imageFilePath.length());
 
                 try {
                     thread.sleep(500);
@@ -54,16 +55,16 @@ public class Client implements Runnable {
                     System.out.println("Error : " + e.getMessage());
                 }
 
-                System.out.println("--------------888888888888888888888----------------");
+                buffer = new byte[StartGameActivity.imageFilePath.length()];
                 int count = 0;
                 while(count < StartGameActivity.imageFilePath.length()){
-                    fis.read(buffer, count, byteInt);
+                    count += fis.read(buffer, count, StartGameActivity.imageFilePath.length() - count);
                     os.write(buffer);
-                    System.out.println(count);
-                    count += byteInt;
+                    System.out.println("Send image to Server..." + count);
                 }
                 // os.flush();
-                // fis.close();
+                fis.close();
+                System.out.println("Send image FINISH.");
 
                 // Sleep, because this thread must wait ChatClientThread to show the message first
                 try {
@@ -74,9 +75,10 @@ public class Client implements Runnable {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                System.out.println("--------------yyyyyyyyyyyyyyyyyyyyyyyy----------------");
+                System.out.println("Error " + e.getMessage());
                 stop();
             }
+            photoCount++;
         }
     }
 
@@ -85,6 +87,7 @@ public class Client implements Runnable {
             thread = null;
             os.close();
             // is.close();
+            dos.close();
             socket.close();
         } catch (IOException e) {
             System.out.println("Error closing : " + e.getMessage());

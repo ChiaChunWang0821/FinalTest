@@ -8,13 +8,12 @@ import java.net.Socket;
 
 public class ChatClientThread extends Thread {
 
-    private int byteInt = 64;
     private static Socket socket = null;
     private static Client client = null;
     private static InputStream is = null;
     private FileOutputStream fos = null;
     private DataInputStream dis = null;
-    private byte[] buffer = new byte [1024];
+    private byte[] buffer;
 
     public ChatClientThread(Client _client, Socket _socket) {
         client = _client;
@@ -36,6 +35,7 @@ public class ChatClientThread extends Thread {
     public void close() {
         try {
             is.close();
+            dis.close();
         } catch (IOException e) {
             System.out.println("Error closing input stream : " + e.getMessage());
         }
@@ -49,31 +49,30 @@ public class ChatClientThread extends Thread {
             while(true){
                 fos = new FileOutputStream(StartGameActivity.imageFileReceivePath); //Gets the true path of your image
                 int fileLen = dis.readInt();
-                System.out.println(fileLen);
-
+                System.out.println("Receive image file length: " + fileLen);
                 try {
                     sleep(500);
                 } catch (InterruptedException e) {
                     System.out.println("Error : " + e.getMessage());
                 }
 
+                buffer = new byte[fileLen];
                 int count = 0;
                 while(count < fileLen){
-                    is.read(buffer, count, byteInt);
+                    count += is.read(buffer, count, fileLen - count);
                     fos.write(buffer); //Writes bytes to output stream
-                    System.out.println(count);
-                    count += byteInt;
+                    System.out.println("Receive image from Server..." + count);
                 }
-                System.out.println("--------------4444444444444444444444444----------------");
                 fos.flush();
-                // fos.close();
+                fos.close();
+                System.out.println("Receive image FINISH.");
                 // 送多少byte先說，收完要停
                 // 讀一個整數，否則就須把很多byte合起來得到整數
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("--------------777777777777777777777----------------");
+            System.out.println("Error" + e.getMessage());
             client.stop();
         }
     }
