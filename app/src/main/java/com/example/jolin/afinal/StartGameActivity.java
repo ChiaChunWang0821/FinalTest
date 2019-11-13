@@ -300,7 +300,7 @@ public class StartGameActivity extends AppCompatActivity {
         mShowImage.setImageBitmap(bitmap);
     }
 
-    private void setreceivePic(String mCurrentPhotoPath) {
+    public void setreceivePic(String mCurrentPhotoPath) {
         // Get the dimensions of the View
         int targetW = mShowReceiveImage.getWidth();
         int targetH = mShowReceiveImage.getHeight();

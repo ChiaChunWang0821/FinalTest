@@ -1,9 +1,11 @@
 package com.example.jolin.afinal;
 
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.net.Socket;
 
 public class Client implements Runnable {
@@ -18,6 +20,8 @@ public class Client implements Runnable {
     private FileInputStream fis = null;
     private ChatClientThread client = null;
     private byte[] buffer;
+    private File file = null;
+    private RandomAccessFile rand = null;
     private int photoCount = 0;
 
     public Client() {
@@ -42,12 +46,15 @@ public class Client implements Runnable {
             if(photoCount != 0){
                 break;
             }
+
            /*將影像byte讀入，再傳出到Server端*/
             try {
-                fis = new FileInputStream(StartGameActivity.imageFilePath);
+                file = new File(StartGameActivity.imageFilePath);
+                rand = new RandomAccessFile(file, "r");
+                // fis = new FileInputStream(StartGameActivity.imageFilePath);
                 dos = new DataOutputStream(os);
-                dos.writeInt(StartGameActivity.imageFilePath.length());
-                System.out.println("Send image file length: " + StartGameActivity.imageFilePath.length());
+                dos.writeInt((int)rand.length());
+                System.out.println("Send image file length: " + (int)rand.length());
 
                 try {
                     thread.sleep(500);
@@ -55,15 +62,21 @@ public class Client implements Runnable {
                     System.out.println("Error : " + e.getMessage());
                 }
 
-                buffer = new byte[StartGameActivity.imageFilePath.length()];
+                buffer = new byte[(int)rand.length()];
                 int count = 0;
-                while(count < StartGameActivity.imageFilePath.length()){
-                    count += fis.read(buffer, count, StartGameActivity.imageFilePath.length() - count);
-                    os.write(buffer);
-                    System.out.println("Send image to Server..." + count);
+                while(count < (int)rand.length()){
+                    count += rand.read(buffer, count, (int)rand.length() - count);
+                }
+                os.write(buffer);
+                System.out.println("Send image to Server..." + count);
+
+                try {
+                    thread.sleep(500);
+                } catch (InterruptedException e) {
+                    System.out.println("Error : " + e.getMessage());
                 }
                 // os.flush();
-                fis.close();
+                rand.close();
                 System.out.println("Send image FINISH.");
 
                 // Sleep, because this thread must wait ChatClientThread to show the message first
@@ -78,6 +91,7 @@ public class Client implements Runnable {
                 System.out.println("Error " + e.getMessage());
                 stop();
             }
+
             photoCount++;
         }
     }
@@ -87,7 +101,7 @@ public class Client implements Runnable {
             thread = null;
             os.close();
             // is.close();
-            dos.close();
+            // dos.close();
             socket.close();
         } catch (IOException e) {
             System.out.println("Error closing : " + e.getMessage());

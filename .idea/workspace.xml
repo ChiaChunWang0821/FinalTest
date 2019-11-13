@@ -59,9 +59,9 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/javaCompile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/ChatClientThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/ChatClientThread.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/StartGameActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/StartGameActivity.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -89,8 +89,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/StartGameActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2099">
-              <caret line="429" column="24" lean-forward="true" selection-start-line="429" selection-start-column="24" selection-end-line="429" selection-end-column="24" />
+            <state relative-caret-position="-1123">
+              <caret line="46" column="12" selection-start-line="46" selection-start-column="12" selection-end-line="46" selection-end-column="12" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -103,7 +103,7 @@
           <provider editor-type-id="android-manifest" />
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="172">
-              <caret line="15" column="46" lean-forward="true" selection-start-line="15" selection-start-column="46" selection-end-line="15" selection-end-column="46" />
+              <caret line="15" column="46" selection-start-line="15" selection-start-column="46" selection-end-line="15" selection-end-column="46" />
             </state>
           </provider>
         </entry>
@@ -111,8 +111,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/Client.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="597">
-              <caret line="66" column="57" selection-start-line="66" selection-start-column="57" selection-end-line="66" selection-end-column="57" />
+            <state relative-caret-position="187">
+              <caret line="94" column="25" selection-start-line="94" selection-start-column="25" selection-end-line="94" selection-end-column="25" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -123,8 +123,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/ChatClientThread.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="141">
-              <caret line="67" column="60" selection-start-line="67" selection-start-column="60" selection-end-line="67" selection-end-column="60" />
+            <state relative-caret-position="68">
+              <caret line="87" column="29" lean-forward="true" selection-start-line="87" selection-start-column="16" selection-end-line="87" selection-end-column="29" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -190,10 +190,10 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/QuickActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/CameraTopRectView.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/CameraSurfaceView.java" />
+        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/StartGameActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/ChatClientThread.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/Client.java" />
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
       </list>
     </option>
   </component>
@@ -392,7 +392,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.23120452" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.23120452" />
       <window_info id="Structure" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info id="Build Variants" order="4" side_tool="true" />
@@ -407,7 +407,7 @@
       <window_info anchor="bottom" id="Event Log" order="4" sideWeight="0.5004042" side_tool="true" weight="0.81632656" />
       <window_info anchor="bottom" id="Build" order="5" weight="0.22820038" />
       <window_info anchor="bottom" id="Android Profiler" order="6" weight="0.32702237" />
-      <window_info anchor="bottom" id="Run" order="7" sideWeight="0.4995958" visible="true" weight="0.3265306" />
+      <window_info active="true" anchor="bottom" id="Run" order="7" sideWeight="0.4995958" visible="true" weight="0.42857143" />
       <window_info anchor="bottom" id="Debug" order="8" />
       <window_info anchor="bottom" id="Find" order="9" />
       <window_info anchor="right" id="Capture Analysis" order="0" />
@@ -650,24 +650,24 @@
       <provider editor-type-id="android-manifest" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="172">
-          <caret line="15" column="46" lean-forward="true" selection-start-line="15" selection-start-column="46" selection-end-line="15" selection-end-column="46" />
+          <caret line="15" column="46" selection-start-line="15" selection-start-column="46" selection-end-line="15" selection-end-column="46" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/ChatClientThread.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/StartGameActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
-          <caret line="67" column="60" selection-start-line="67" selection-start-column="60" selection-end-line="67" selection-end-column="60" />
+        <state relative-caret-position="-1123">
+          <caret line="46" column="12" selection-start-line="46" selection-start-column="12" selection-end-line="46" selection-end-column="12" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/StartGameActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/ChatClientThread.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2099">
-          <caret line="429" column="24" lean-forward="true" selection-start-line="429" selection-start-column="24" selection-end-line="429" selection-end-column="24" />
+        <state relative-caret-position="68">
+          <caret line="87" column="29" lean-forward="true" selection-start-line="87" selection-start-column="16" selection-end-line="87" selection-end-column="29" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -676,8 +676,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/jolin/afinal/Client.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="597">
-          <caret line="66" column="57" selection-start-line="66" selection-start-column="57" selection-end-line="66" selection-end-column="57" />
+        <state relative-caret-position="187">
+          <caret line="94" column="25" selection-start-line="94" selection-start-column="25" selection-end-line="94" selection-end-column="25" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
