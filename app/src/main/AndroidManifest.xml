@@ -65,6 +65,8 @@
             android:parentActivityName=".MainActivity" />
         <activity android:name=".TakePicActivity"
             android:parentActivityName=".StartGameActivity" />
+        <activity android:name=".GameActivity"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

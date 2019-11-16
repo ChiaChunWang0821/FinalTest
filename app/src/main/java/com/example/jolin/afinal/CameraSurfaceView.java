@@ -58,8 +58,6 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         topView = new CameraTopRectView(context, attrs);
 
         initView();
-
-
     }
 
     //拿到手机屏幕大小
@@ -69,14 +67,12 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         WM.getDefaultDisplay().getMetrics(outMetrics);
         mScreenWidth = outMetrics.widthPixels;
         mScreenHeight = outMetrics.heightPixels;
-
     }
 
     private void initView() {
         holder = getHolder();//获得surfaceHolder引用
         holder.addCallback(this);
 //        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);//设置类型
-
     }
 
     @Override
@@ -90,7 +86,6 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 e.printStackTrace();
             }
         }
-
     }
 
     @Override
@@ -100,7 +95,6 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         setCameraParams(mCamera, mScreenWidth, mScreenHeight);
         mCamera.startPreview();
 //        mCamera.takePicture(null, null, jpeg);
-
     }
 
     @Override
@@ -119,7 +113,6 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
             System.out.println(success);
         }
     }
-
 
     private void setCameraParams(Camera camera, int width, int height) {
         Log.i(TAG, "setCameraParams  width=" + width + "  height=" + height);
@@ -162,7 +155,6 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         mCamera.cancelAutoFocus();//自动对焦。
         mCamera.setDisplayOrientation(90);// 设置PreviewDisplay的方向，效果就是将捕获的画面旋转多少度显示
         mCamera.setParameters(parameters);
-
     }
 
     /**
@@ -222,14 +214,11 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
         @Override
         public void onPictureTaken(byte[] data, Camera Camera) {
-
-
             topView.draw(new Canvas());
 
             BufferedOutputStream bos = null;
             Bitmap bm = null;
             if (data != null) {
-
             }
 
             try {
@@ -247,7 +236,6 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 //旋转后的图片
                 bitmap = Bitmap.createBitmap(bm, 0, 0, width, height, m, true);
 
-
                 System.out.println("执行了吗+3");
                 File file = new File(filePath);
                 if (!file.exists()) {
@@ -262,8 +250,6 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 bm.compress(Bitmap.CompressFormat.JPEG, 100, bos);//将图片压缩到流中
 
                 byteFile = new byte[bm.getByteCount()];
-                // Client.setByteArray(byteFile);
-                // sendFileToServer(mmain.socket, byteFile);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -280,7 +266,6 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                     e.printStackTrace();
                 }
             }
-
         }
     };
 
@@ -296,16 +281,5 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-    }
-
-    public static byte[] getByteArray(){
-        while(true){
-            if(byteFile != null){
-                System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
-                System.out.println(byteFile);
-                return byteFile;
-            }
-        }
     }
 }
