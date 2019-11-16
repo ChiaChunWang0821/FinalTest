@@ -47,7 +47,7 @@ public class Client implements Runnable {
                 break;
             }
 
-           /*將影像byte讀入，再傳出到Server端*/
+            /*將影像byte讀入，再傳出到Server端*/
             try {
                 file = new File(StartGameActivity.imageFilePath);
                 rand = new RandomAccessFile(file, "r");

@@ -25,8 +25,9 @@ public class SliderAdapter extends PagerAdapter {
     };
 
     public String[] slide_headings = {
-            "請先開啟相機鏡頭授權及藍芽，並連上「HC-06」，幫助請按右上角",
-            "製作人：孫韻涵、周希珉"
+            "請先開啟相機鏡頭授權及藍芽，並連上「HC-06」，幫助請按右上角"
+            // ,
+            // "製作人：孫韻涵、周希珉"
     };
 
     @Override
