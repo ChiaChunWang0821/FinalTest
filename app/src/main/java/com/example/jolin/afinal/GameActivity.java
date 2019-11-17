@@ -5,116 +5,140 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
 
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
-import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class GameActivity extends Activity {
-    //擷取畫面按鈕
-    private Button mBtn;
-    //截圖的畫面
-    private ImageView mImg;
+public class GameActivity extends AppCompatActivity {
+
+
+    private Button button;
+    private CameraSurfaceView mCameraSurfaceView;
+
+    private Activity activity;
+    String filePath;
 
     private String imageFilePath;
     private File image = null;
     private FileOutputStream fos = null;
-    private RandomAccessFile rand = null;
 
-    private String serverName = "140.121.197.165";
-    private int serverPort = 5002;
-    private Socket socket = null;
-    private OutputStream os = null;
-    private DataOutputStream dos = null;
-    private FileInputStream fis = null;
-    private byte[] buffer;
-    private File file = null;
-    // private RandomAccessFile rand = null;
+    private Timer timer;
+    private TimerTask timerTask;
+    private Date date;
+
+    private boolean flag = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);
+        activity = this;
+        getBundleData();
 
-        //取得Button與ImageView元件
-        mBtn = (Button) findViewById(R.id.btn);
-        mImg = (ImageView) findViewById(R.id.img);
+        initSet();
+        initView();
 
-        //點擊按鈕觸發
-        mBtn.setOnClickListener(new Button.OnClickListener()
-        {
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                //將截圖Bitmap放入ImageView
-                mImg.setImageBitmap(getScreenShot());
+            public void onClick(View view) {
+                // mCameraSurfaceView.takePicture(activity, filePath);
+                if(flag == false){
+                    flag = true;
+                    button.setText("停止");
+                    getScreenShot();
+                }
+                else{
+                    flag = false;
+                    button.setText("拍照");
+                    stopWork();
+                }
             }
         });
     }
 
-    //將全螢幕畫面轉換成Bitmap
-    private Bitmap getScreenShot()
-    {
-        //藉由View來Cache全螢幕畫面後放入Bitmap
-        View mView = getWindow().getDecorView();
-        mView.setDrawingCacheEnabled(true); //设置能否缓存图片信息（drawing cache）
-        mView.buildDrawingCache(); //如果能够缓存图片，则创建图片缓存
-        Bitmap mFullBitmap = mView.getDrawingCache(); //如果图片已经缓存，返回一个bitmap
+    private void initSet() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // 全屏显示
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.activity_take_pic);
+    }
 
-        //取得系統狀態列高度
-        Rect mRect = new Rect();
-        getWindow().getDecorView().getWindowVisibleDisplayFrame(mRect);
-        int mStatusBarHeight = mRect.top;
 
-        //取得手機螢幕長寬尺寸
-        int mPhoneWidth = getWindowManager().getDefaultDisplay().getWidth();
-        int mPhoneHeight = getWindowManager().getDefaultDisplay().getHeight();
+    private void initView() {
+        mCameraSurfaceView = (CameraSurfaceView) findViewById(R.id.cameraSurfaceView);
+        button = (Button) findViewById(R.id.takePic);
+    }
 
-        //將狀態列的部分移除並建立新的Bitmap
-        Bitmap mBitmap = Bitmap.createBitmap(mFullBitmap, 0, mStatusBarHeight, mPhoneWidth, mPhoneHeight - mStatusBarHeight);
-
-        int bytes = mBitmap.getByteCount();
-
-        ByteBuffer buf = ByteBuffer.allocate(bytes);
-        mBitmap.copyPixelsToBuffer(buf);
-
-        byte[] byteArray = buf.array();
-
-        try {
-            image = createImageFile();
-            // rand = new RandomAccessFile(image, "rw");
-            // rand.write(byteArray);
-            fos = new FileOutputStream(imageFilePath);
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void getBundleData() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            filePath = bundle.getString("url");
         }
+        Log.d("checkpoint", "check filePath - " + filePath);
+    }
 
-        /*try {
-            client();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+    //將全螢幕畫面轉換成Bitmap
+    private void getScreenShot()
+    {
+        timer = new Timer(true);
+        timer.schedule(timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("YA");
 
-        //將Cache的畫面清除
-        mView.destroyDrawingCache(); //释放缓存占用的资源
+                //藉由View來Cache全螢幕畫面後放入Bitmap
+                View mView = getWindow().getDecorView();
+                mView.setDrawingCacheEnabled(true); //设置能否缓存图片信息（drawing cache）
+                mView.buildDrawingCache(); //如果能够缓存图片，则创建图片缓存
+                Bitmap mFullBitmap = mView.getDrawingCache(); //如果图片已经缓存，返回一个bitmap
 
-        return mBitmap;
+                //取得系統狀態列高度
+                Rect mRect = new Rect();
+                getWindow().getDecorView().getWindowVisibleDisplayFrame(mRect);
+                int mStatusBarHeight = mRect.top;
+
+                //取得手機螢幕長寬尺寸
+                int mPhoneWidth = getWindowManager().getDefaultDisplay().getWidth();
+                int mPhoneHeight = getWindowManager().getDefaultDisplay().getHeight();
+
+                //將狀態列的部分移除並建立新的Bitmap
+                Bitmap mBitmap = Bitmap.createBitmap(mFullBitmap, 0, mStatusBarHeight, mPhoneWidth, mPhoneHeight - mStatusBarHeight);
+
+                int bytes = mBitmap.getByteCount();
+
+                ByteBuffer buf = ByteBuffer.allocate(bytes);
+                mBitmap.copyPixelsToBuffer(buf);
+
+                byte[] byteArray = buf.array();
+
+                try {
+                    image = createImageFile();
+                    fos = new FileOutputStream(imageFilePath);
+                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                    fos.flush();
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                //將Cache的畫面清除
+                mView.destroyDrawingCache(); //释放缓存占用的资源
+            }
+        }, 0, 1000); //在0秒後執行此任務,每次間隔1秒
+
+        // return mBitmap;
     }
 
     //創造檔案名稱、和存擋路徑
@@ -131,44 +155,8 @@ public class GameActivity extends Activity {
         return image;
     }
 
-    void client() throws IOException {
-        socket = new Socket(serverName, serverPort);
-        os = socket.getOutputStream();
-        try {
-            file = new File(imageFilePath);
-            rand = new RandomAccessFile(file, "r");
-            // fis = new FileInputStream(StartGameActivity.imageFilePath);
-            dos = new DataOutputStream(os);
-            dos.writeInt((int)rand.length());
-            System.out.println("Send image file length: " + (int)rand.length());
-
-            buffer = new byte[(int)rand.length()];
-            int count = 0;
-            while(count < (int)rand.length()){
-                count += rand.read(buffer, count, (int)rand.length() - count);
-            }
-            os.write(buffer);
-            System.out.println("Send image to Server..." + count);
-
-            // os.flush();
-            rand.close();
-            System.out.println("Send image FINISH.");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Error " + e.getMessage());
-            stop();
-        }
-    }
-
-    public void stop() {
-        try {
-            os.close();
-            // is.close();
-            // dos.close();
-            socket.close();
-        } catch (IOException e) {
-            System.out.println("Error closing : " + e.getMessage());
-        }
+    private void stopWork(){
+        timer.cancel();
+        System.out.println("STOP");
     }
 }

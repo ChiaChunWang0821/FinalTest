@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //左側清單
         int id = item.getItemId();
         if(id == R.id.start_game){
-            soundEffectPlayer.play(R.raw.entersong);
+            // soundEffectPlayer.play(R.raw.entersong);
             Intent start_game = new Intent(this, GameActivity.class);
             startActivity(start_game);
         }
