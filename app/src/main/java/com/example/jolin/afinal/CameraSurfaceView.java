@@ -41,7 +41,9 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     private String filePath;
     private Activity activity;
 
-    private static byte[] byteFile;
+    private static byte[] byteFile = null;
+
+    private static int byteCount = 0;
 
     public CameraSurfaceView(Context context) {
         this(context, null);
@@ -249,7 +251,8 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
                 bm.compress(Bitmap.CompressFormat.JPEG, 100, bos);//将图片压缩到流中
 
-                byteFile = new byte[bm.getByteCount()];
+                byteCount = bm.getByteCount();
+                byteFile = new byte[byteCount];
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -282,4 +285,12 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
+
+    public static int getByteCount(){
+        return byteCount;
+    }
+    public static byte[] getByteFile(){
+        return byteFile;
+    }
+
 }
