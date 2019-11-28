@@ -46,7 +46,7 @@ public class StartGameActivity extends AppCompatActivity {
     private Button btnDisconnect;
     private Button mBtnPic;
     private ImageView mShowImage;
-    private ImageView mShowReceiveImage;
+    public static ImageView mShowReceiveImage;
     public static String imageFilePath = null;
     public static String imageFileReceivePath = null;
     private boolean isCameraPermission = false;
