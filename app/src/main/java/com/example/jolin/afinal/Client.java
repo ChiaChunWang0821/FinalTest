@@ -23,6 +23,7 @@ public class Client implements Runnable {
     private File file = null;
     private RandomAccessFile rand = null;
     private int photoCount = 0;
+    public static boolean flagSend = false;
 
     public Client() {
         try {
@@ -49,13 +50,20 @@ public class Client implements Runnable {
 
             /*將影像byte讀入，再傳出到Server端*/
             try {
+                while(StartGameActivity.imageFilePath == null){
+
+                }
                 file = new File(StartGameActivity.imageFilePath);
+                if(!file.exists()){
+                    // 檢查檔案在不在，不在不要做
+                }
                 rand = new RandomAccessFile(file, "r");
                 // fis = new FileInputStream(StartGameActivity.imageFilePath);
                 dos = new DataOutputStream(os);
                 dos.writeInt((int)rand.length());
                 System.out.println("Send image file length: " + (int)rand.length());
 
+                // 拍下影像downsize!!不需要這麼高
                 try {
                     thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -85,6 +93,8 @@ public class Client implements Runnable {
                 } catch (InterruptedException e) {
                     System.out.println("Error : " + e.getMessage());
                 }
+
+                flagSend = true;
 
             } catch (IOException e) {
                 e.printStackTrace();

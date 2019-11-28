@@ -138,8 +138,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //左側清單
         int id = item.getItemId();
         if(id == R.id.start_game){
-            // soundEffectPlayer.play(R.raw.entersong);
-            Intent start_game = new Intent(this, GameActivity.class);
+            soundEffectPlayer.play(R.raw.entersong);
+            Intent start_game = new Intent(this, StartGameActivity.class);
             startActivity(start_game);
         }
         else if(id == R.id.challenge_mode){

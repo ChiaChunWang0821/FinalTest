@@ -56,7 +56,12 @@ public class ChatClientThread extends Thread {
                     break;
                 }
 
-                file = new File(StartGameActivity.imageFileReceivePath);
+                // 用lock 鎖住，放到另個地方存(buffer) main thread較順
+                // 收送都要
+                while(StartGameActivity.imageFileReceivePath == null || Client.flagSend == false){
+                    System.out.println("Not yet to Receive file");
+                }
+                file = new File(StartGameActivity.imageFileReceivePath); // 開檔給main thread，連線前先開檔
                 rand = new RandomAccessFile(file, "rw");
                 int fileLen = dis.readInt();
                 System.out.println("Receive image file length: " + fileLen);

@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -45,8 +47,8 @@ public class StartGameActivity extends AppCompatActivity {
     private Button mBtnPic;
     private ImageView mShowImage;
     private ImageView mShowReceiveImage;
-    public static String imageFilePath;
-    public static String imageFileReceivePath;
+    public static String imageFilePath = null;
+    public static String imageFileReceivePath = null;
     private boolean isCameraPermission = false;
 
     private CameraTopRectView topView;
@@ -74,6 +76,12 @@ public class StartGameActivity extends AppCompatActivity {
     int longfftcount=0;
     int v=0;
     int o=0;
+
+    private Timer timer;
+    private TimerTask timerTask;
+    private Date date;
+
+    private boolean flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +150,6 @@ public class StartGameActivity extends AppCompatActivity {
         btnConnect.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 client = new Client();
                 Toast.makeText(getApplicationContext(), "Connect SUCCESS!", Toast.LENGTH_LONG).show();
             }
@@ -151,8 +158,23 @@ public class StartGameActivity extends AppCompatActivity {
         mBtnPic.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openCamera();
-                startMuscle();
+                // startMuscle();
+                client = new Client();
+                Toast.makeText(getApplicationContext(), "Connect SUCCESS!", Toast.LENGTH_LONG).show();
+                //openCamera();
+                // 實驗一秒最多可拍幾張
+
+                if(flag == false){
+                    flag = true;
+                    mBtnPic.setText("停止");
+                    openCamera();
+                }
+                else{
+                    flag = false;
+                    mBtnPic.setText("拍照");
+                    timer.cancel();
+                    System.out.println("STOP");
+                }
             }
         });
 
