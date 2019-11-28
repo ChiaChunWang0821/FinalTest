@@ -42,7 +42,7 @@ public class StartGameActivity extends AppCompatActivity {
     public static final int PermissionCode = 1000;
     public static final int GetPhotoCode = 1001;
 
-    private Button btnConnect;
+    // private Button btnConnect;
     private Button btnDisconnect;
     private Button mBtnPic;
     private ImageView mShowImage;
@@ -55,6 +55,9 @@ public class StartGameActivity extends AppCompatActivity {
     private Camera mCamera;
 
     private Client client;
+
+    private File photoFile = null;
+    private File photoReceiveFile = null;
 
     private ProgressBar startbar;
     private ProgressBar bar;
@@ -95,6 +98,7 @@ public class StartGameActivity extends AppCompatActivity {
 
         activity = this;
         initView();
+        initSet();
         initListener();
     }
 
@@ -107,7 +111,7 @@ public class StartGameActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        btnConnect = (Button) findViewById(R.id.connect);
+        // btnConnect = (Button) findViewById(R.id.connect);
         btnDisconnect = (Button) findViewById(R.id.disconnect);
 
         mBtnPic = (Button) findViewById(R.id.btn_take_pic);
@@ -146,35 +150,46 @@ public class StartGameActivity extends AppCompatActivity {
         bar6.setMax(600);
     }
 
-    private void initListener() {
-        btnConnect.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                client = new Client();
-                Toast.makeText(getApplicationContext(), "Connect SUCCESS!", Toast.LENGTH_LONG).show();
-            }
-        });
+    private void initSet(){
+        try {
+            photoFile = createImageFile();
+            photoReceiveFile = createReceiveImageFile();
+        } catch (IOException e) {
+            Log.d("checkpoint", "error for createImageFile 創建路徑失敗");
+            System.out.println("error for createImageFile 創建路徑失敗");
+        }
 
+        client = new Client();
+        Toast.makeText(getApplicationContext(), "Connect SUCCESS!", Toast.LENGTH_LONG).show();
+    }
+
+    private void initListener() {
         mBtnPic.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // startMuscle();
-                client = new Client();
-                Toast.makeText(getApplicationContext(), "Connect SUCCESS!", Toast.LENGTH_LONG).show();
-                //openCamera();
+                openCamera();
                 // 實驗一秒最多可拍幾張
 
-                if(flag == false){
+                /*if(flag == false){
                     flag = true;
                     mBtnPic.setText("停止");
-                    openCamera();
+                    timer = new Timer(true);
+                    timer.schedule(timerTask = new TimerTask() {
+                        @Override
+                        public void run() {
+                            System.out.println("YA");
+
+                            openCamera();
+                        }
+                    }, 0, 1000); //在0秒後執行此任務,每次間隔1秒
                 }
                 else{
                     flag = false;
                     mBtnPic.setText("拍照");
                     timer.cancel();
                     System.out.println("STOP");
-                }
+                }*/
             }
         });
 
@@ -240,14 +255,14 @@ public class StartGameActivity extends AppCompatActivity {
     private void openCamera() {
         //已獲得權限
         if (isCameraPermission) {
-            File photoFile = null;
+            /*File photoFile = null;
             File photoReceiveFile = null;
             try {
                 photoFile = createImageFile();
                 photoReceiveFile = createReceiveImageFile();
             } catch (IOException e) {
                 Log.d("checkpoint", "error for createImageFile 創建路徑失敗");
-            }
+            }*/
             //成功創建路徑的話
             if (photoFile != null) {
                 Intent intent = new Intent(StartGameActivity.this, TakePicActivity.class);

@@ -15,7 +15,6 @@ public class Client implements Runnable {
     private Socket socket = null;
     private Thread thread = null;
     private OutputStream os = null;
-    // private InputStream is = null;
     private DataOutputStream dos = null;
     private FileInputStream fis = null;
     private ChatClientThread client = null;
@@ -23,7 +22,7 @@ public class Client implements Runnable {
     private File file = null;
     private RandomAccessFile rand = null;
     private int photoCount = 0;
-    public static boolean flagSend = false;
+    public static boolean allowReceive = false;
 
     public Client() {
         try {
@@ -47,19 +46,23 @@ public class Client implements Runnable {
             if(photoCount != 0){
                 break;
             }
-
+            allowReceive = false;
             /*將影像byte讀入，再傳出到Server端*/
             try {
-                while(StartGameActivity.imageFilePath == null){
-
-                }
                 file = new File(StartGameActivity.imageFilePath);
                 if(!file.exists()){
                     // 檢查檔案在不在，不在不要做
+                    System.out.println("StartGameActivity.imageFilePath is not exist!");
+                    continue;
                 }
                 rand = new RandomAccessFile(file, "r");
-                // fis = new FileInputStream(StartGameActivity.imageFilePath);
                 dos = new DataOutputStream(os);
+                while((int)rand.length() == 0) { }
+                try {
+                    thread.sleep(100);
+                } catch (InterruptedException e) {
+                    System.out.println("Error : " + e.getMessage());
+                }
                 dos.writeInt((int)rand.length());
                 System.out.println("Send image file length: " + (int)rand.length());
 
@@ -94,7 +97,7 @@ public class Client implements Runnable {
                     System.out.println("Error : " + e.getMessage());
                 }
 
-                flagSend = true;
+                allowReceive = true;
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -110,8 +113,7 @@ public class Client implements Runnable {
         try {
             thread = null;
             os.close();
-            // is.close();
-            // dos.close();
+            ChatClientThread.threadStatus = false;
             socket.close();
         } catch (IOException e) {
             System.out.println("Error closing : " + e.getMessage());

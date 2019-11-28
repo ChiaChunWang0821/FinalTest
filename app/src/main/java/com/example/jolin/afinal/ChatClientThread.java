@@ -19,6 +19,7 @@ public class ChatClientThread extends Thread {
     private File file = null;
     private RandomAccessFile rand = null;
     private int photoCount = 0;
+    public static boolean threadStatus = true;
 
     public ChatClientThread(Client _client, Socket _socket) {
         client = _client;
@@ -51,17 +52,24 @@ public class ChatClientThread extends Thread {
         System.out.print("----------------ChatClientThread----------------");
         /*從Server傳入影像byte，再輸出成file*/
         try {
-            while(true){
+            while(threadStatus){
                 if(photoCount != 0){
                     break;
                 }
 
+                if(Client.allowReceive == false){
+                    // 照片還沒被拍下，還沒有影像要傳
+                    System.out.println("Not yet to Receive file");
+                    continue;
+                }
                 // 用lock 鎖住，放到另個地方存(buffer) main thread較順
                 // 收送都要
-                while(StartGameActivity.imageFileReceivePath == null || Client.flagSend == false){
-                    System.out.println("Not yet to Receive file");
-                }
+
                 file = new File(StartGameActivity.imageFileReceivePath); // 開檔給main thread，連線前先開檔
+                if(!file.exists()){
+                    System.out.println("StartGameActivity.imageFileReceivePath is not exist!");
+                    continue;
+                }
                 rand = new RandomAccessFile(file, "rw");
                 int fileLen = dis.readInt();
                 System.out.println("Receive image file length: " + fileLen);
@@ -91,11 +99,14 @@ public class ChatClientThread extends Thread {
                 // 送多少byte先說，收完要停
                 // 讀一個整數，否則就須把很多byte合起來得到整數
                 photoCount++;
+
+                Client.allowReceive = false;
             }
 
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Error" + e.getMessage());
+            threadStatus = false;
             client.stop();
         }
     }
