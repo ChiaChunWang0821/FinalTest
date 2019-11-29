@@ -60,7 +60,7 @@ public class Client implements Runnable {
                 rand = new RandomAccessFile(file, "r");*/
                 dos = new DataOutputStream(os);
                 // while((int)rand.length() == 0) { }
-                while(CameraSurfaceView.getByteFile() == null){ }
+                while(CameraSurfaceView.getByteFile() == null || CameraSurfaceView.getByteCount() == 0){ }
                 byteCount = CameraSurfaceView.getByteCount();
                 byteFile = CameraSurfaceView.getByteFile();
                 try {
@@ -119,7 +119,7 @@ public class Client implements Runnable {
 
             photoCount++;
 
-            StartGameActivity.mShowReceiveImage.setImageBitmap(Bytes2Bimap(byteFile));
+            // StartGameActivity.mShowReceiveImage.setImageBitmap(Bytes2Bimap(byteFile));
         }
     }
 

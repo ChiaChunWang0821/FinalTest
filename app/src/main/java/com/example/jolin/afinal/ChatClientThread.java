@@ -4,9 +4,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.net.Socket;
 
 public class ChatClientThread extends Thread {
@@ -17,8 +19,8 @@ public class ChatClientThread extends Thread {
     private FileOutputStream fos = null;
     private DataInputStream dis = null;
     private byte[] buffer;
-    // private File file = null;
-    // private RandomAccessFile rand = null;
+    private File file = null;
+    private RandomAccessFile rand = null;
     private int photoCount = 0;
     public static boolean threadStatus = true;
 
@@ -66,12 +68,12 @@ public class ChatClientThread extends Thread {
                 // 用lock 鎖住，放到另個地方存(buffer) main thread較順
                 // 收送都要
 
-                /*file = new File(StartGameActivity.imageFileReceivePath); // 開檔給main thread，連線前先開檔
+                file = new File(StartGameActivity.imageFileReceivePath); // 開檔給main thread，連線前先開檔
                 if(!file.exists()){
                     System.out.println("StartGameActivity.imageFileReceivePath is not exist!");
                     continue;
                 }
-                rand = new RandomAccessFile(file, "rw");*/
+                rand = new RandomAccessFile(file, "rw");
                 int fileLen = dis.readInt();
                 System.out.println("Receive image file length: " + fileLen);
                 try {
@@ -85,7 +87,7 @@ public class ChatClientThread extends Thread {
                 while(count < fileLen){
                     count += is.read(buffer, count, fileLen - count);
                 }
-                // rand.write(buffer); //Writes bytes to output stream
+                rand.write(buffer); //Writes bytes to output stream
                 System.out.println("Receive image from Server..." + count);
 
                 try {
@@ -95,7 +97,7 @@ public class ChatClientThread extends Thread {
                 }
 
                 // fos.flush();
-                // rand.close();
+                rand.close();
                 System.out.println("Receive image FINISH.");
                 // 送多少byte先說，收完要停
                 // 讀一個整數，否則就須把很多byte合起來得到整數
@@ -103,7 +105,7 @@ public class ChatClientThread extends Thread {
 
                 Client.allowReceive = false;
 
-                StartGameActivity.mShowReceiveImage.setImageBitmap(Bytes2Bimap(buffer));
+                // StartGameActivity.mShowReceiveImage.setImageBitmap(Bytes2Bimap(buffer));
             }
 
         } catch (IOException e) {

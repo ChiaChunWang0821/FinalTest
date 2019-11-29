@@ -16,8 +16,8 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -41,8 +41,9 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     private String filePath;
     private Activity activity;
 
-    private static byte[] byteFile = null;
+    private File file;
 
+    private static byte[] byteFile = null;
     private static int byteCount = 0;
 
     public CameraSurfaceView(Context context) {
@@ -219,6 +220,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
             topView.draw(new Canvas());
 
             BufferedOutputStream bos = null;
+            ByteArrayOutputStream baos = null;
             Bitmap bm = null;
             if (data != null) {
             }
@@ -239,27 +241,45 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 bitmap = Bitmap.createBitmap(bm, 0, 0, width, height, m, true);
 
                 System.out.println("执行了吗+3");
-                File file = new File(filePath);
+                file = new File(filePath);
                 if (!file.exists()) {
                     file.createNewFile();
                 }
-                bos = new BufferedOutputStream(new FileOutputStream(file));
+                // bos = new BufferedOutputStream(new FileOutputStream(file));
+                baos = new ByteArrayOutputStream();
 
                 Bitmap sizeBitmap = Bitmap.createScaledBitmap(bitmap,
                         topView.getViewWidth(), topView.getViewHeight(), true);
                 bm = Bitmap.createBitmap(sizeBitmap);// 截取
 
-                bm.compress(Bitmap.CompressFormat.JPEG, 100, bos);//将图片压缩到流中
+                // bm.compress(Bitmap.CompressFormat.JPEG, 70, bos);//将图片压缩到流中
+                bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                //70 是压缩率，表示压缩30%; 如果不压缩是100，表示压缩率为0
+                byteFile = baos.toByteArray();
+                System.out.println("byteCount = " + byteCount);
+                System.out.println("byteFile = " + byteFile);
+                while(byteCount == 0) {
+                    byteCount = byteFile.length;
+                }
+                System.out.println("byteCount = " + byteCount);
+                /*byteCount = bm.getByteCount();
 
-                byteCount = bm.getByteCount();
-                byteFile = new byte[byteCount];
+                ByteBuffer buf = ByteBuffer.allocate(byteCount);
+                bm.copyPixelsToBuffer(buf);
+
+                byteFile = buf.array();*/
+                // byteFile = new byte[byteCount];
 
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 try {
-                    bos.flush();//输出
-                    bos.close();//关闭
+                    // bos.flush();//输出
+                    // bos.close();//关闭
+
+                    baos.flush();
+                    baos.close();
+
                     bm.recycle();// 回收bitmap空间
                     mCamera.stopPreview();// 关闭预览
                     activity.setResult(Activity.RESULT_OK);
