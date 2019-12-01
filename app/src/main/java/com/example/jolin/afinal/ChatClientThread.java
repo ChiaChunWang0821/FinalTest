@@ -29,6 +29,9 @@ public class ChatClientThread extends Thread {
         socket = _socket;
         open();
         start();
+
+        // main thread 用另個buffer存收到的影像
+        // 此thread 收到影像後，看main thread的lock是否正在收。
     }
 
     public void open() {

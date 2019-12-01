@@ -39,6 +39,8 @@ public class Client implements Runnable {
         } catch (IOException e) {
             System.out.println("Error : " + e.getMessage());
         }
+
+        // 用一個boolean 控制是否可以更新
     }
 
     @Override
@@ -58,7 +60,7 @@ public class Client implements Runnable {
                     continue;
                 }
                 rand = new RandomAccessFile(file, "r");*/
-                dos = new DataOutputStream(os);
+                dos = new DataOutputStream(os); // 搬去外面
                 // while((int)rand.length() == 0) { }
                 while(CameraSurfaceView.getByteFile() == null || CameraSurfaceView.getByteCount() == 0){ }
                 byteCount = CameraSurfaceView.getByteCount();
