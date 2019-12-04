@@ -186,7 +186,6 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 }
             }
         }
-
         return result;
     }
 

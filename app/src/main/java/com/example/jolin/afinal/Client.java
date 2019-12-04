@@ -16,11 +16,7 @@ public class Client implements Runnable {
     private Thread thread = null;
     private OutputStream os = null;
     private DataOutputStream dos = null;
-    // private FileInputStream fis = null;
     private ChatClientThread client = null;
-    // private byte[] buffer;
-    // private File file = null;
-    // private RandomAccessFile rand = null;
     private int photoCount = 0;
     public static boolean allowReceive = false;
     private int byteCount = 0;

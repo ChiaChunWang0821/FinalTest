@@ -168,10 +168,10 @@ public class StartGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // startMuscle();
-                openCamera();
+                // openCamera();
                 // 實驗一秒最多可拍幾張
 
-                /*if(flag == false){
+                if(flag == false){
                     flag = true;
                     mBtnPic.setText("停止");
                     timer = new Timer(true);
@@ -189,7 +189,7 @@ public class StartGameActivity extends AppCompatActivity {
                     mBtnPic.setText("拍照");
                     timer.cancel();
                     System.out.println("STOP");
-                }*/
+                }
             }
         });
 

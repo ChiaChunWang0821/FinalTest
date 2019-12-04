@@ -42,7 +42,6 @@ public class TakePicActivity extends AppCompatActivity {
         setContentView(R.layout.activity_take_pic);
     }
 
-
     private void initView() {
         mCameraSurfaceView = (CameraSurfaceView) findViewById(R.id.cameraSurfaceView);
         button = (Button) findViewById(R.id.takePic);
