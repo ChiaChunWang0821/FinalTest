@@ -8,8 +8,8 @@ public class Session {
     private Map _objectContainer;
     private static Session session;
 
-    //Attention here, DO NOT USE keyword 'new' to create this object.
-    //Instead, use getSession method.
+    // Attention here, DO NOT USE keyword 'new' to create this object.
+    // Instead, use getSession method.
     @SuppressWarnings("unchecked")
     private Session() {
         _objectContainer = new HashMap();

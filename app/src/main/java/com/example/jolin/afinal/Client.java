@@ -1,8 +1,5 @@
 package com.example.jolin.afinal;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -29,6 +26,7 @@ public class Client implements Runnable {
             System.out.println("Connected to server " + socket.getRemoteSocketAddress());
 
             os = socket.getOutputStream();
+            dos = new DataOutputStream(os);
             client = new ChatClientThread(this, socket);
             thread = new Thread(this);
             thread.start();
@@ -56,8 +54,8 @@ public class Client implements Runnable {
                     continue;
                 }
                 rand = new RandomAccessFile(file, "r");*/
-                dos = new DataOutputStream(os); // 搬去外面
                 // while((int)rand.length() == 0) { }
+
                 while(CameraSurfaceView.getByteFile() == null || CameraSurfaceView.getByteCount() == 0){ }
                 byteCount = CameraSurfaceView.getByteCount();
                 byteFile = CameraSurfaceView.getByteFile();
@@ -116,8 +114,6 @@ public class Client implements Runnable {
             }
 
             photoCount++;
-
-            // StartGameActivity.mShowReceiveImage.setImageBitmap(Bytes2Bimap(byteFile));
         }
     }
 
@@ -131,13 +127,5 @@ public class Client implements Runnable {
             System.out.println("Error closing : " + e.getMessage());
         }
         client.close();
-    }
-
-    private Bitmap Bytes2Bimap(byte[] b) {
-        if (b.length != 0) {
-            return BitmapFactory.decodeByteArray(b, 0, b.length);
-        } else {
-            return null;
-        }
     }
 }

@@ -1,3 +1,5 @@
+package com.example.jolin.afinal;
+
 import java.io.*;
 /*
  * This class defines the different type of messages that will be exchanged between the
@@ -14,10 +16,10 @@ public class ChatMessage implements Serializable {
     // LOGOUT to disconnect from the Server
     static final int MUSCLE = 0, BYTELEN = 1, BYTEFILE = 2;
     private int type;
-    private String message;
+    private int message;
 
     // constructor
-    ChatMessage(int type, String message) {
+    ChatMessage(int type, int message) {
         this.type = type;
         this.message = message;
     }
@@ -26,7 +28,7 @@ public class ChatMessage implements Serializable {
         return type;
     }
 
-    String getMessage() {
+    int getMessage() {
         return message;
     }
 }
