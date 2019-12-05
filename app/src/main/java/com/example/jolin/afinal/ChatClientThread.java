@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.RandomAccessFile;
 import java.net.Socket;
 
@@ -18,11 +19,15 @@ public class ChatClientThread extends Thread {
     private static InputStream is = null;
     private FileOutputStream fos = null;
     private DataInputStream dis = null;
+    private ObjectInputStream sInput;
     private byte[] buffer;
     private File file = null;
     private RandomAccessFile rand = null;
     private int photoCount = 0;
     public static boolean threadStatus = true;
+    private ChatMessage cm;
+    private double muscleData = 0;
+    private int byteLenData = 0;
 
     public ChatClientThread(Client _client, Socket _socket) {
         client = _client;
@@ -38,6 +43,7 @@ public class ChatClientThread extends Thread {
         try {
             is = socket.getInputStream();
             dis = new DataInputStream(is);
+            sInput  = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
             System.out.println("Error getting input stream : " + e.getMessage());
             client.stop();
@@ -77,7 +83,46 @@ public class ChatClientThread extends Thread {
                     continue;
                 }
                 rand = new RandomAccessFile(file, "rw");
-                int fileLen = dis.readInt();
+
+                try {
+                    cm = (ChatMessage) sInput.readObject();
+                    sleep(500);
+                } catch (ClassNotFoundException e1) {
+                    e1.printStackTrace();
+                } catch (InterruptedException e) {
+                    System.out.println("Error : " + e.getMessage());
+                }
+
+                switch(cm.getType()) {
+                    case ChatMessage.MUSCLE:
+                        muscleData = cm.getDoubleMessage();
+                        break;
+                    case ChatMessage.BYTELEN:
+                        byteLenData = cm.getIntMessage();
+                        System.out.println("Receive image file length: " + byteLenData);
+
+                        buffer = new byte[byteLenData];
+                        int count = 0;
+                        while(count < byteLenData) {
+                            count += is.read(buffer, count, byteLenData - count);
+                        }
+                        rand.write(buffer);
+                        System.out.println("Receive image from Server..." + count);
+
+                        try {
+                            sleep(500);
+                        } catch (InterruptedException e) {
+                            System.out.println("Error : " + e.getMessage());
+                        }
+                        rand.close();
+                        System.out.println("Receive image FINISH.");
+                        break;
+        			/*case ChatMessage.BYTEFILE:
+        				byteFileData = cm.getByteMessage();
+        				break;*/
+                }
+
+                /*int fileLen = dis.readInt();
                 System.out.println("Receive image file length: " + fileLen);
                 try {
                     sleep(500);
@@ -101,7 +146,7 @@ public class ChatClientThread extends Thread {
 
                 // fos.flush();
                 rand.close();
-                System.out.println("Receive image FINISH.");
+                System.out.println("Receive image FINISH.");*/
                 // 送多少byte先說，收完要停
                 // 讀一個整數，否則就須把很多byte合起來得到整數
                 photoCount++;

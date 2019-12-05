@@ -16,19 +16,39 @@ public class ChatMessage implements Serializable {
     // LOGOUT to disconnect from the Server
     static final int MUSCLE = 0, BYTELEN = 1, BYTEFILE = 2;
     private int type;
-    private int message;
+    private int intMessage;
+    private double doubleMessage;
+    // private byte[] byteMessage;
 
     // constructor
-    ChatMessage(int type, int message) {
+    ChatMessage(int type, int intMessage) {
         this.type = type;
-        this.message = message;
+        this.intMessage = intMessage;
     }
+
+    ChatMessage(int type, double doubleMessage) {
+        this.type = type;
+        this.doubleMessage = doubleMessage;
+    }
+
+    /*ChatMessage(int type, byte[] byteMessage) {
+        this.type = type;
+        this.byteMessage = byteMessage;
+    }*/
 
     int getType() {
         return type;
     }
 
-    int getMessage() {
-        return message;
+    int getIntMessage() {
+        return intMessage;
     }
+
+    double getDoubleMessage(){
+        return doubleMessage;
+    }
+
+    /*byte[] getByteMessage(){
+        return byteMessage;
+    }*/
 }

@@ -2,6 +2,7 @@ package com.example.jolin.afinal;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
@@ -13,11 +14,13 @@ public class Client implements Runnable {
     private Thread thread = null;
     private OutputStream os = null;
     private DataOutputStream dos = null;
+    private static ObjectOutputStream sOutput;
     private ChatClientThread client = null;
     private int photoCount = 0;
     public static boolean allowReceive = false;
     private int byteCount = 0;
     private byte[] byteFile = null;
+    private static double muscleData;
 
     public Client() {
         try {
@@ -27,6 +30,7 @@ public class Client implements Runnable {
 
             os = socket.getOutputStream();
             dos = new DataOutputStream(os);
+            sOutput = new ObjectOutputStream(socket.getOutputStream());
             client = new ChatClientThread(this, socket);
             thread = new Thread(this);
             thread.start();
@@ -47,27 +51,18 @@ public class Client implements Runnable {
             allowReceive = false;
             /*將影像byte讀入，再傳出到Server端*/
             try {
-                /*file = new File(StartGameActivity.imageFilePath);
-                if(!file.exists()){
-                    // 檢查檔案在不在，不在不要做
-                    System.out.println("StartGameActivity.imageFilePath is not exist!");
-                    continue;
-                }
-                rand = new RandomAccessFile(file, "r");*/
-                // while((int)rand.length() == 0) { }
-
                 while(CameraSurfaceView.getByteFile() == null || CameraSurfaceView.getByteCount() == 0){ }
                 byteCount = CameraSurfaceView.getByteCount();
                 byteFile = CameraSurfaceView.getByteFile();
+
                 try {
                     thread.sleep(100);
                 } catch (InterruptedException e) {
                     System.out.println("Error : " + e.getMessage());
                 }
-                /*dos.writeInt((int)rand.length());
-                System.out.println("Send image file length: " + (int)rand.length());*/
 
-                dos.writeInt(byteCount);
+                // dos.writeInt(byteCount);
+                sOutput.writeObject(new ChatMessage(ChatMessage.BYTELEN, byteCount));
                 System.out.println("Send image file length: " + byteCount);
 
                 // 拍下影像downsize!!不需要這麼高
@@ -85,6 +80,7 @@ public class Client implements Runnable {
                 os.write(buffer);
                 System.out.println("Send image to Server..." + count);*/
 
+                // sOutput.writeObject(new ChatMessage(ChatMessage.BYTEFILE, byteFile));
                 os.write(byteFile);
                 os.flush();
                 System.out.println("Send image to Server...");
@@ -94,8 +90,7 @@ public class Client implements Runnable {
                 } catch (InterruptedException e) {
                     System.out.println("Error : " + e.getMessage());
                 }
-                // os.flush();
-                // rand.close();
+
                 System.out.println("Send image FINISH.");
 
                 // Sleep, because this thread must wait ChatClientThread to show the message first
@@ -112,7 +107,6 @@ public class Client implements Runnable {
                 System.out.println("Error " + e.getMessage());
                 stop();
             }
-
             photoCount++;
         }
     }
@@ -127,5 +121,14 @@ public class Client implements Runnable {
             System.out.println("Error closing : " + e.getMessage());
         }
         client.close();
+    }
+
+    public static void checkMuscle(){
+        muscleData = StartMuscle.getMove();
+        try {
+            sOutput.writeObject(new ChatMessage(ChatMessage.MUSCLE, muscleData));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

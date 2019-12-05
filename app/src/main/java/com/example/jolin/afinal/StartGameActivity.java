@@ -182,7 +182,7 @@ public class StartGameActivity extends AppCompatActivity {
                             System.out.println("YA");
 
                             openCamera();
-                            StartMuscle.getMove();
+                            // Client.checkMuscle();
                         }
                     }, 0, 1000); //在0秒後執行此任務,每次間隔1秒
                 }
