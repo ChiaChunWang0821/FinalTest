@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -20,8 +19,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -43,7 +40,6 @@ public class StartGameActivity extends AppCompatActivity {
     public static final int PermissionCode = 1000;
     public static final int GetPhotoCode = 1001;
 
-    // private Button btnConnect;
     private Button btnDisconnect;
     private Button mBtnPic;
     private ImageView mShowImage;
@@ -59,27 +55,6 @@ public class StartGameActivity extends AppCompatActivity {
 
     private File photoFile = null;
     private File photoReceiveFile = null;
-
-    private ProgressBar startbar;
-    private ProgressBar bar;
-    private ProgressBar bar2;
-    private ProgressBar bar3;
-    private ProgressBar bar4;
-    private ProgressBar bar5;
-    private ProgressBar bar6;
-    private Long startTime;
-    private ImageView win;
-    private ImageView lose;
-    private static Handler handler = new Handler();
-    int count = 0;
-    private TextView time;
-    private TextView text;
-    double[] logs = new double[4];
-    double[] longlogs =  new double[32];
-    int fftcount = 0;
-    int longfftcount=0;
-    int v=0;
-    int o=0;
 
     private Timer timer;
     private TimerTask timerTask;
@@ -111,10 +86,7 @@ public class StartGameActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-        // btnConnect = (Button) findViewById(R.id.connect);
         btnDisconnect = (Button) findViewById(R.id.disconnect);
-
         mBtnPic = (Button) findViewById(R.id.btn_take_pic);
         mShowImage = (ImageView) findViewById(R.id.show_image);
         mShowReceiveImage = (ImageView) findViewById(R.id.receive_image);
@@ -126,29 +98,6 @@ public class StartGameActivity extends AppCompatActivity {
             public void handleMessage(Message msg) {
             }
         };*/
-
-        startbar = (ProgressBar) findViewById(R.id.startbar);
-        bar = (ProgressBar) findViewById(R.id.Bar2);
-        bar3 = (ProgressBar) findViewById(R.id.bar3);
-        bar4 = (ProgressBar) findViewById(R.id.bar4);
-        bar5 = (ProgressBar) findViewById(R.id.bar5);
-        bar6 = (ProgressBar) findViewById(R.id.bar6);
-        win = (ImageView) findViewById(R.id.win);
-        lose = (ImageView) findViewById(R.id.lose);
-        text = (TextView) findViewById(R.id.text);
-
-        startbar.setProgress(0);
-        startbar.setMax(150);
-        bar.setProgress(0);
-        bar.setMax(600);
-        bar3.setProgress(0);
-        bar3.setMax(600);
-        bar4.setProgress(0);
-        bar4.setMax(600);
-        bar5.setProgress(0);
-        bar5.setMax(600);
-        bar6.setProgress(0);
-        bar6.setMax(600);
     }
 
     private void initSet(){
@@ -182,7 +131,7 @@ public class StartGameActivity extends AppCompatActivity {
                             System.out.println("YA");
 
                             openCamera();
-                            // Client.checkMuscle();
+                            Client.checkMuscle();
                         }
                     }, 0, 1000); //在0秒後執行此任務,每次間隔1秒
                 }

@@ -42,8 +42,8 @@ public class ChatClientThread extends Thread {
     public void open() {
         try {
             is = socket.getInputStream();
-            dis = new DataInputStream(is);
-            sInput  = new ObjectInputStream(socket.getInputStream());
+            // dis = new DataInputStream(is);
+            sInput  = new ObjectInputStream(is);
         } catch (IOException e) {
             System.out.println("Error getting input stream : " + e.getMessage());
             client.stop();

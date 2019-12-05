@@ -1,6 +1,5 @@
 package com.example.jolin.afinal;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -13,7 +12,7 @@ public class Client implements Runnable {
     private Socket socket = null;
     private Thread thread = null;
     private OutputStream os = null;
-    private DataOutputStream dos = null;
+    // private DataOutputStream dos = null;
     private static ObjectOutputStream sOutput;
     private ChatClientThread client = null;
     private int photoCount = 0;
@@ -29,8 +28,8 @@ public class Client implements Runnable {
             System.out.println("Connected to server " + socket.getRemoteSocketAddress());
 
             os = socket.getOutputStream();
-            dos = new DataOutputStream(os);
-            sOutput = new ObjectOutputStream(socket.getOutputStream());
+            // dos = new DataOutputStream(os);
+            sOutput = new ObjectOutputStream(os);
             client = new ChatClientThread(this, socket);
             thread = new Thread(this);
             thread.start();
