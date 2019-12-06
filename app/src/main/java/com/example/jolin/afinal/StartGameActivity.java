@@ -30,6 +30,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class StartGameActivity extends AppCompatActivity {
     // private Handler mMainHandler;
@@ -62,6 +64,8 @@ public class StartGameActivity extends AppCompatActivity {
 
     private boolean flag = false;
 
+    private ReadWriteLock rwLock = new ReentrantReadWriteLock();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +80,7 @@ public class StartGameActivity extends AppCompatActivity {
         initView();
         initSet();
         initListener();
+
     }
 
     private void initView() {
@@ -109,10 +114,10 @@ public class StartGameActivity extends AppCompatActivity {
             System.out.println("error for createImageFile 創建路徑失敗");
         }
 
-        client = new Client();
+        // client = new Client();
         Toast.makeText(getApplicationContext(), "Connect SUCCESS!", Toast.LENGTH_LONG).show();
 
-        cachedThreadPool.execute(new StartMuscle());
+        // cachedThreadPool.execute(new StartMuscle());
     }
 
     private void initListener() {
@@ -120,8 +125,12 @@ public class StartGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // 實驗一秒最多可拍幾張
+                openCamera();
 
-                if(flag == false){
+                rwLock.readLock().lock();
+                // mShowReceiveImage.setImageBitmap(Bytes2Bimap(Client.getReadBuffer()));
+                rwLock.readLock().unlock();
+                /*if(flag == false){
                     flag = true;
                     mBtnPic.setText("停止");
                     timer = new Timer(true);
@@ -131,7 +140,7 @@ public class StartGameActivity extends AppCompatActivity {
                             System.out.println("YA");
 
                             openCamera();
-                            Client.checkMuscle();
+                            // Client.checkMuscle();
                         }
                     }, 0, 1000); //在0秒後執行此任務,每次間隔1秒
                 }
@@ -140,7 +149,7 @@ public class StartGameActivity extends AppCompatActivity {
                     mBtnPic.setText("拍照");
                     timer.cancel();
                     System.out.println("STOP");
-                }
+                }*/
             }
         });
 
@@ -310,5 +319,14 @@ public class StartGameActivity extends AppCompatActivity {
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         mShowReceiveImage.setImageBitmap(bitmap);
+    }
+
+    private Bitmap Bytes2Bimap(byte[] b) {
+
+        if (b.length != 0) {
+            return BitmapFactory.decodeByteArray(b, 0, b.length);
+        } else {
+            return null;
+        }
     }
 }

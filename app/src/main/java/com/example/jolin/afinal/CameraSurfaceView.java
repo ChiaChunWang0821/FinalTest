@@ -37,6 +37,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     private int mScreenHeight;
     private CameraTopRectView topView;
 
+    private FaceDetect faceDetect = new FaceDetect();
     //更動
     private String filePath;
     private Activity activity;
@@ -237,7 +238,11 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 int width = bm.getWidth();
                 m.setRotate(-90);
                 //旋转后的图片
+
+
                 bitmap = Bitmap.createBitmap(bm, 0, 0, width, height, m, true);
+
+                faceDetect.start(bitmap);
 
                 System.out.println("执行了吗+3");
                 file = new File(filePath);

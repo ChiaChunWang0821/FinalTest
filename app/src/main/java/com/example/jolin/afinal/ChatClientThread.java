@@ -1,9 +1,5 @@
 package com.example.jolin.afinal;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,7 +14,7 @@ public class ChatClientThread extends Thread {
     private static Client client = null;
     private static InputStream is = null;
     private FileOutputStream fos = null;
-    private DataInputStream dis = null;
+    // private DataInputStream dis = null;
     private ObjectInputStream sInput;
     private byte[] buffer;
     private File file = null;
@@ -29,12 +25,13 @@ public class ChatClientThread extends Thread {
     private double muscleData = 0;
     private int byteLenData = 0;
 
+
+
     public ChatClientThread(Client _client, Socket _socket) {
         client = _client;
         socket = _socket;
         open();
         start();
-
         // main thread 用另個buffer存收到的影像
         // 此thread 收到影像後，看main thread的lock是否正在收。
     }
@@ -53,7 +50,7 @@ public class ChatClientThread extends Thread {
     public void close() {
         try {
             is.close();
-            dis.close();
+            // dis.close();
         } catch (IOException e) {
             System.out.println("Error closing input stream : " + e.getMessage());
         }
@@ -116,6 +113,9 @@ public class ChatClientThread extends Thread {
                         }
                         rand.close();
                         System.out.println("Receive image FINISH.");
+
+                        Client.readBuffer = new byte[buffer.length];
+                        Client.readBuffer = buffer;
                         break;
         			/*case ChatMessage.BYTEFILE:
         				byteFileData = cm.getByteMessage();
@@ -164,11 +164,5 @@ public class ChatClientThread extends Thread {
         }
     }
 
-    private Bitmap Bytes2Bimap(byte[] b) {
-        if (b.length != 0) {
-            return BitmapFactory.decodeByteArray(b, 0, b.length);
-        } else {
-            return null;
-        }
-    }
+
 }

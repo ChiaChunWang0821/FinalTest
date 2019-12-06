@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Client implements Runnable {
 
@@ -21,6 +23,10 @@ public class Client implements Runnable {
     private byte[] byteFile = null;
     private static double muscleData;
 
+    private byte[] writeBuffer = null;
+    public static byte[] readBuffer = null;
+    private ReadWriteLock rwLock = new ReentrantReadWriteLock();
+
     public Client() {
         try {
             socket = new Socket(serverName, serverPort);
@@ -30,6 +36,12 @@ public class Client implements Runnable {
             os = socket.getOutputStream();
             // dos = new DataOutputStream(os);
             sOutput = new ObjectOutputStream(os);
+
+            rwLock.writeLock().lock();
+            writeBuffer = new byte[CameraSurfaceView.getByteCount()];
+            writeBuffer = CameraSurfaceView.getByteFile();
+            rwLock.writeLock().unlock();
+
             client = new ChatClientThread(this, socket);
             thread = new Thread(this);
             thread.start();
@@ -50,9 +62,15 @@ public class Client implements Runnable {
             allowReceive = false;
             /*將影像byte讀入，再傳出到Server端*/
             try {
-                while(CameraSurfaceView.getByteFile() == null || CameraSurfaceView.getByteCount() == 0){ }
-                byteCount = CameraSurfaceView.getByteCount();
-                byteFile = CameraSurfaceView.getByteFile();
+                while(CameraSurfaceView.getByteFile() == null || CameraSurfaceView.getByteCount() == 0) {
+                    rwLock.writeLock().lock();
+                    writeBuffer = new byte[CameraSurfaceView.getByteCount()];
+                    writeBuffer = CameraSurfaceView.getByteFile();
+                    rwLock.writeLock().unlock();
+                }
+
+                byteFile = writeBuffer;
+                byteCount = byteFile.length;
 
                 try {
                     thread.sleep(100);
@@ -61,7 +79,8 @@ public class Client implements Runnable {
                 }
 
                 // dos.writeInt(byteCount);
-                sOutput.writeObject(new ChatMessage(ChatMessage.BYTELEN, byteCount));
+                System.out.println("Start Send image file");
+                sOutput.writeObject(new ChatMessage(ChatMessage.BYTELEN, (double) byteCount));
                 System.out.println("Send image file length: " + byteCount);
 
                 // 拍下影像downsize!!不需要這麼高
@@ -129,5 +148,9 @@ public class Client implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static byte[] getReadBuffer(){
+        return readBuffer;
     }
 }
