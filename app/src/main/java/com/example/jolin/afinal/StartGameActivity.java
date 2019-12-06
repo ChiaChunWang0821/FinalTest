@@ -114,7 +114,7 @@ public class StartGameActivity extends AppCompatActivity {
             System.out.println("error for createImageFile 創建路徑失敗");
         }
 
-        // client = new Client();
+        client = new Client();
         Toast.makeText(getApplicationContext(), "Connect SUCCESS!", Toast.LENGTH_LONG).show();
 
         // cachedThreadPool.execute(new StartMuscle());

@@ -80,7 +80,8 @@ public class Client implements Runnable {
 
                 // dos.writeInt(byteCount);
                 System.out.println("Start Send image file");
-                sOutput.writeObject(new ChatMessage(ChatMessage.BYTELEN, (double) byteCount));
+                Message mg = new Message(1, (double)byteCount);
+                sOutput.writeObject(mg);
                 System.out.println("Send image file length: " + byteCount);
 
                 // 拍下影像downsize!!不需要這麼高
@@ -144,7 +145,7 @@ public class Client implements Runnable {
     public static void checkMuscle(){
         muscleData = StartMuscle.getMove();
         try {
-            sOutput.writeObject(new ChatMessage(ChatMessage.MUSCLE, muscleData));
+            sOutput.writeObject(new Message(0, muscleData));
         } catch (IOException e) {
             e.printStackTrace();
         }

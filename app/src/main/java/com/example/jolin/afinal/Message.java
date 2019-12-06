@@ -1,15 +1,15 @@
 package com.example.jolin.afinal;
 
-import java.io.*;
+import java.io.Serializable;
 
-public class ChatMessage implements Serializable {
-    /*static final int MUSCLE = 0, BYTELEN = 1;
+public class Message implements Serializable {
+    static final int MUSCLE = 0, BYTELEN = 1;
     private int type;
     private double Message;
     private int intMessage;
 
     // constructor
-    ChatMessage(int type, double Message) {
+    Message(int type, double Message) {
         this.type = type;
         this.Message = Message;
     }
@@ -25,5 +25,5 @@ public class ChatMessage implements Serializable {
 
     double getDoubleMessage(){
         return Message;
-    }*/
+    }
 }

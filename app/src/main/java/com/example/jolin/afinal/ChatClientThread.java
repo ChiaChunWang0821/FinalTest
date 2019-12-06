@@ -21,7 +21,7 @@ public class ChatClientThread extends Thread {
     private RandomAccessFile rand = null;
     private int photoCount = 0;
     public static boolean threadStatus = true;
-    private ChatMessage cm;
+    private Message cm;
     private double muscleData = 0;
     private int byteLenData = 0;
 
@@ -82,7 +82,7 @@ public class ChatClientThread extends Thread {
                 rand = new RandomAccessFile(file, "rw");
 
                 try {
-                    cm = (ChatMessage) sInput.readObject();
+                    cm = (Message) sInput.readObject();
                     sleep(500);
                 } catch (ClassNotFoundException e1) {
                     e1.printStackTrace();
@@ -91,10 +91,10 @@ public class ChatClientThread extends Thread {
                 }
 
                 switch(cm.getType()) {
-                    case ChatMessage.MUSCLE:
+                    case Message.MUSCLE:
                         muscleData = cm.getDoubleMessage();
                         break;
-                    case ChatMessage.BYTELEN:
+                    case Message.BYTELEN:
                         byteLenData = cm.getIntMessage();
                         System.out.println("Receive image file length: " + byteLenData);
 
