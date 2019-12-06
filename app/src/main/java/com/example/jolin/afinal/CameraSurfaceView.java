@@ -15,6 +15,8 @@ import android.view.SurfaceView;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,6 +46,8 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     private static byte[] byteFile = null;
 
     private static int byteCount = 0;
+
+    private FirebaseVisionImage image;
 
     public CameraSurfaceView(Context context) {
         this(context, null);
@@ -238,6 +242,8 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 //旋转后的图片
                 bitmap = Bitmap.createBitmap(bm, 0, 0, width, height, m, true);
 
+                processFaceDetect(bitmap);
+
                 System.out.println("执行了吗+3");
                 File file = new File(filePath);
                 if (!file.exists()) {
@@ -272,6 +278,11 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         }
     };
 
+    private void processFaceDetect(Bitmap bitmap){
+        FaceDetect faceDetect = new FaceDetect();
+        faceDetect.start(bitmap);
+
+    }
     public void takePicture(Activity activity, String filePath) {
         this.filePath = filePath;
         this.activity = activity;
@@ -291,6 +302,12 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     }
     public static byte[] getByteFile(){
         return byteFile;
+    }
+
+    private void imageFromBitmap(Bitmap bitmap) {
+        // [START image_from_bitmap]
+        image = FirebaseVisionImage.fromBitmap(bitmap);
+        // [END image_from_bitmap]
     }
 
 }
