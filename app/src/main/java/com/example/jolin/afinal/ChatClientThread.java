@@ -1,10 +1,10 @@
 package com.example.jolin.afinal;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.RandomAccessFile;
 import java.net.Socket;
 
@@ -14,14 +14,14 @@ public class ChatClientThread extends Thread {
     private static Client client = null;
     private static InputStream is = null;
     private FileOutputStream fos = null;
-    // private DataInputStream dis = null;
-    private ObjectInputStream sInput;
+    private DataInputStream dis = null;
+    // private ObjectInputStream sInput;
     private byte[] buffer;
     private File file = null;
     private RandomAccessFile rand = null;
     private int photoCount = 0;
     public static boolean threadStatus = true;
-    private Message cm;
+    // private Message cm;
     private double muscleData = 0;
     private int byteLenData = 0;
 
@@ -39,8 +39,8 @@ public class ChatClientThread extends Thread {
     public void open() {
         try {
             is = socket.getInputStream();
-            // dis = new DataInputStream(is);
-            sInput  = new ObjectInputStream(is);
+            dis = new DataInputStream(is);
+            // sInput  = new ObjectInputStream(is);
         } catch (IOException e) {
             System.out.println("Error getting input stream : " + e.getMessage());
             client.stop();
@@ -81,7 +81,7 @@ public class ChatClientThread extends Thread {
                 }
                 rand = new RandomAccessFile(file, "rw");
 
-                try {
+                /*try {
                     cm = (Message) sInput.readObject();
                     sleep(500);
                 } catch (ClassNotFoundException e1) {
@@ -117,36 +117,40 @@ public class ChatClientThread extends Thread {
                         Client.readBuffer = new byte[buffer.length];
                         Client.readBuffer = buffer;
                         break;
-        			/*case ChatMessage.BYTEFILE:
-        				byteFileData = cm.getByteMessage();
-        				break;*/
+                }*/
+
+                boolean type = dis.readBoolean();
+                if(type == true){ // muscle data
+
+                }
+                else{ // byte data
+                    int fileLen = dis.readInt();
+                    System.out.println("Receive image file length: " + fileLen);
+                    try {
+                        sleep(500);
+                    } catch (InterruptedException e) {
+                        System.out.println("Error : " + e.getMessage());
+                    }
+
+                    buffer = new byte[fileLen];
+                    int count = 0;
+                    while(count < fileLen){
+                        count += is.read(buffer, count, fileLen - count);
+                    }
+                    rand.write(buffer); //Writes bytes to output stream
+                    System.out.println("Receive image from Server..." + count);
+
+                    try {
+                        sleep(500);
+                    } catch (InterruptedException e) {
+                        System.out.println("Error : " + e.getMessage());
+                    }
+
+                    // fos.flush();
+                    rand.close();
+                    System.out.println("Receive image FINISH.");
                 }
 
-                /*int fileLen = dis.readInt();
-                System.out.println("Receive image file length: " + fileLen);
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    System.out.println("Error : " + e.getMessage());
-                }
-
-                buffer = new byte[fileLen];
-                int count = 0;
-                while(count < fileLen){
-                    count += is.read(buffer, count, fileLen - count);
-                }
-                rand.write(buffer); //Writes bytes to output stream
-                System.out.println("Receive image from Server..." + count);
-
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    System.out.println("Error : " + e.getMessage());
-                }
-
-                // fos.flush();
-                rand.close();
-                System.out.println("Receive image FINISH.");*/
                 // 送多少byte先說，收完要停
                 // 讀一個整數，否則就須把很多byte合起來得到整數
                 photoCount++;

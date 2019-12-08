@@ -3,7 +3,7 @@ package com.example.jolin.afinal;
 import java.io.*;
 
 public class ChatMessage implements Serializable {
-    /*static final int MUSCLE = 0, BYTELEN = 1;
+    static final int MUSCLE = 0, BYTELEN = 1;
     private int type;
     private double Message;
     private int intMessage;
@@ -25,5 +25,5 @@ public class ChatMessage implements Serializable {
 
     double getDoubleMessage(){
         return Message;
-    }*/
+    }
 }

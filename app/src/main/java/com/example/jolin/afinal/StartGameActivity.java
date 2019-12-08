@@ -127,8 +127,9 @@ public class StartGameActivity extends AppCompatActivity {
                 // 實驗一秒最多可拍幾張
                 openCamera();
 
+                // 請求lock狀態，非lock 就lock 把東西讀走 在unlock
                 rwLock.readLock().lock();
-                // mShowReceiveImage.setImageBitmap(Bytes2Bimap(Client.getReadBuffer()));
+                mShowReceiveImage.setImageBitmap(Bytes2Bimap(Client.getReadBuffer()));
                 rwLock.readLock().unlock();
                 /*if(flag == false){
                     flag = true;

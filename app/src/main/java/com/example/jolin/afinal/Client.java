@@ -1,7 +1,7 @@
 package com.example.jolin.afinal;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -14,8 +14,8 @@ public class Client implements Runnable {
     private Socket socket = null;
     private Thread thread = null;
     private OutputStream os = null;
-    // private DataOutputStream dos = null;
-    private static ObjectOutputStream sOutput;
+    private static DataOutputStream dos = null;
+    // private static ObjectOutputStream sOutput;
     private ChatClientThread client = null;
     private int photoCount = 0;
     public static boolean allowReceive = false;
@@ -34,13 +34,15 @@ public class Client implements Runnable {
             System.out.println("Connected to server " + socket.getRemoteSocketAddress());
 
             os = socket.getOutputStream();
-            // dos = new DataOutputStream(os);
-            sOutput = new ObjectOutputStream(os);
+            dos = new DataOutputStream(os);
+            // sOutput = new ObjectOutputStream(os);
 
             rwLock.writeLock().lock();
             writeBuffer = new byte[CameraSurfaceView.getByteCount()];
             writeBuffer = CameraSurfaceView.getByteFile();
             rwLock.writeLock().unlock();
+            // lock就可 -> trylock
+            // 控制多久沒有更新 就不會在skip -> counter去控制
 
             client = new ChatClientThread(this, socket);
             thread = new Thread(this);
@@ -62,12 +64,13 @@ public class Client implements Runnable {
             allowReceive = false;
             /*將影像byte讀入，再傳出到Server端*/
             try {
-                while(CameraSurfaceView.getByteFile() == null || CameraSurfaceView.getByteCount() == 0) {
+                while(CameraSurfaceView.getByteFile() == null || CameraSurfaceView.getByteCount() == 0) {}
+                // 要有人鎖空byte，有東西就解
                     rwLock.writeLock().lock();
                     writeBuffer = new byte[CameraSurfaceView.getByteCount()];
                     writeBuffer = CameraSurfaceView.getByteFile();
                     rwLock.writeLock().unlock();
-                }
+
 
                 byteFile = writeBuffer;
                 byteCount = byteFile.length;
@@ -78,10 +81,11 @@ public class Client implements Runnable {
                     System.out.println("Error : " + e.getMessage());
                 }
 
-                // dos.writeInt(byteCount);
+                dos.writeBoolean(false);
+                dos.writeInt(byteCount);
                 System.out.println("Start Send image file");
-                Message mg = new Message(1, (double)byteCount);
-                sOutput.writeObject(mg);
+                // Message mg = new Message(1, (double)byteCount);
+                // sOutput.writeObject(mg);
                 System.out.println("Send image file length: " + byteCount);
 
                 // 拍下影像downsize!!不需要這麼高
@@ -145,7 +149,9 @@ public class Client implements Runnable {
     public static void checkMuscle(){
         muscleData = StartMuscle.getMove();
         try {
-            sOutput.writeObject(new Message(0, muscleData));
+            dos.writeBoolean(true);
+            dos.writeDouble(muscleData);
+            // sOutput.writeObject(new Message(0, muscleData));
         } catch (IOException e) {
             e.printStackTrace();
         }
