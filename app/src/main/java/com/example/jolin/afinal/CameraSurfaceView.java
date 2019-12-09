@@ -45,7 +45,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     private File file;
 
     private static byte[] byteFile = null;
-    private static int byteCount = 0;
+    private static int byteCount;
 
     public CameraSurfaceView(Context context) {
         this(context, null);
@@ -260,12 +260,10 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 //70 是压缩率，表示压缩30%; 如果不压缩是100，表示压缩率为0
                 byteFile = baos.toByteArray();
+                byteCount = byteFile.length;
                 System.out.println("byteCount = " + byteCount);
-                System.out.println("byteFile = " + byteFile);
-                while(byteCount == 0) {
-                    byteCount = byteFile.length;
-                }
-                System.out.println("byteCount = " + byteCount);
+                getByteFile();
+
                 /*byteCount = bm.getByteCount();
 
                 ByteBuffer buf = ByteBuffer.allocate(byteCount);
@@ -314,6 +312,13 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         return byteCount;
     }
     public static byte[] getByteFile(){
+        Client.lock.lock();
+        try{
+            Client.condition.signal();
+            System.out.println("Client Thread Signal!");
+        }finally {
+            Client.lock.unlock();
+        }
         return byteFile;
     }
 

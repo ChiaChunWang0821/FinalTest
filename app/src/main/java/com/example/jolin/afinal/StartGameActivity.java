@@ -30,8 +30,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class StartGameActivity extends AppCompatActivity {
     // private Handler mMainHandler;
@@ -64,7 +64,9 @@ public class StartGameActivity extends AppCompatActivity {
 
     private boolean flag = false;
 
-    private ReadWriteLock rwLock = new ReentrantReadWriteLock();
+    // private ReadWriteLock rwLock = new ReentrantReadWriteLock();
+    private Lock lock = new ReentrantLock();
+    private int countLock = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +82,6 @@ public class StartGameActivity extends AppCompatActivity {
         initView();
         initSet();
         initListener();
-
     }
 
     private void initView() {
@@ -128,9 +129,26 @@ public class StartGameActivity extends AppCompatActivity {
                 openCamera();
 
                 // 請求lock狀態，非lock 就lock 把東西讀走 在unlock
-                rwLock.readLock().lock();
-                mShowReceiveImage.setImageBitmap(Bytes2Bimap(Client.getReadBuffer()));
-                rwLock.readLock().unlock();
+                // 若未lock，則更新畫面影像
+                // 若正lock，且countLock未超過5，則略過。否則，等到unlock，且更新影像。
+                if(lock.tryLock()){
+                    try{
+                        mShowReceiveImage.setImageBitmap(Bytes2Bimap(ChatClientThread.getReadBuffer()));
+                    }finally {
+                        lock.unlock();
+                    }
+                }
+                else{
+                    countLock++;
+                    if(countLock > 5){
+                        while(!lock.tryLock()){}
+                        lock.lock();
+                        mShowReceiveImage.setImageBitmap(Bytes2Bimap(ChatClientThread.getReadBuffer()));
+                        lock.unlock();
+                        countLock = 0;
+                    }
+                }
+
                 /*if(flag == false){
                     flag = true;
                     mBtnPic.setText("停止");
@@ -323,11 +341,15 @@ public class StartGameActivity extends AppCompatActivity {
     }
 
     private Bitmap Bytes2Bimap(byte[] b) {
-
-        if (b.length != 0) {
-            return BitmapFactory.decodeByteArray(b, 0, b.length);
-        } else {
+        if(b == null){
             return null;
+        }
+        else{
+            if(b.length == 0){
+                return null;
+            }else {
+                return BitmapFactory.decodeByteArray(b, 0, b.length);
+            }
         }
     }
 }

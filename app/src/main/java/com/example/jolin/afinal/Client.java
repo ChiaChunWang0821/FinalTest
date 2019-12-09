@@ -4,28 +4,32 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Client implements Runnable {
 
     private String serverName = "140.121.197.165";
     private int serverPort = 5002;
     private Socket socket = null;
+
+    private ChatClientThread client = null;
     private Thread thread = null;
+
     private OutputStream os = null;
     private static DataOutputStream dos = null;
-    // private static ObjectOutputStream sOutput;
-    private ChatClientThread client = null;
+
     private int photoCount = 0;
     public static boolean allowReceive = false;
+
     private int byteCount = 0;
     private byte[] byteFile = null;
     private static double muscleData;
 
     private byte[] writeBuffer = null;
-    public static byte[] readBuffer = null;
-    private ReadWriteLock rwLock = new ReentrantReadWriteLock();
+    public static Lock lock = new ReentrantLock();
+    public static Condition condition = lock.newCondition();
 
     public Client() {
         try {
@@ -35,13 +39,7 @@ public class Client implements Runnable {
 
             os = socket.getOutputStream();
             dos = new DataOutputStream(os);
-            // sOutput = new ObjectOutputStream(os);
 
-            rwLock.writeLock().lock();
-            writeBuffer = new byte[CameraSurfaceView.getByteCount()];
-            writeBuffer = CameraSurfaceView.getByteFile();
-            rwLock.writeLock().unlock();
-            // lock就可 -> trylock
             // 控制多久沒有更新 就不會在skip -> counter去控制
 
             client = new ChatClientThread(this, socket);
@@ -64,16 +62,25 @@ public class Client implements Runnable {
             allowReceive = false;
             /*將影像byte讀入，再傳出到Server端*/
             try {
-                while(CameraSurfaceView.getByteFile() == null || CameraSurfaceView.getByteCount() == 0) {}
+                /*while(CameraSurfaceView.getByteFile() == null || CameraSurfaceView.getByteCount() == 0) {}
                 // 要有人鎖空byte，有東西就解
-                    rwLock.writeLock().lock();
-                    writeBuffer = new byte[CameraSurfaceView.getByteCount()];
-                    writeBuffer = CameraSurfaceView.getByteFile();
-                    rwLock.writeLock().unlock();
 
+                lock.lock();
+                writeBuffer = new byte[CameraSurfaceView.getByteCount()];
+                writeBuffer = CameraSurfaceView.getByteFile();
+                lock.unlock();
+                */
 
-                byteFile = writeBuffer;
-                byteCount = byteFile.length;
+                setByteFile();
+
+                if(lock.tryLock()){
+                    try{
+                        byteFile = writeBuffer;
+                        byteCount = byteFile.length;
+                    }finally {
+                        lock.unlock();
+                    }
+                }
 
                 try {
                     thread.sleep(100);
@@ -81,19 +88,20 @@ public class Client implements Runnable {
                     System.out.println("Error : " + e.getMessage());
                 }
 
+                // false 表示傳送影像array
                 dos.writeBoolean(false);
-                dos.writeInt(byteCount);
-                System.out.println("Start Send image file");
-                // Message mg = new Message(1, (double)byteCount);
-                // sOutput.writeObject(mg);
-                System.out.println("Send image file length: " + byteCount);
+                System.out.println("Send Boolean: FALSE");
 
-                // 拍下影像downsize!!不需要這麼高
+                dos.writeInt(byteCount);
+                System.out.println("Send image file length: " + byteCount);
                 try {
                     thread.sleep(500);
                 } catch (InterruptedException e) {
                     System.out.println("Error : " + e.getMessage());
                 }
+
+                // 拍下影像downsize!!不需要這麼高
+                System.out.println("Start Send image file");
 
                 /*buffer = new byte[(int)rand.length()];
                 int count = 0;
@@ -103,25 +111,16 @@ public class Client implements Runnable {
                 os.write(buffer);
                 System.out.println("Send image to Server..." + count);*/
 
-                // sOutput.writeObject(new ChatMessage(ChatMessage.BYTEFILE, byteFile));
                 os.write(byteFile);
                 os.flush();
-                System.out.println("Send image to Server...");
+                System.out.println("Send image to Server..." + byteFile.length);
 
                 try {
                     thread.sleep(500);
                 } catch (InterruptedException e) {
                     System.out.println("Error : " + e.getMessage());
                 }
-
                 System.out.println("Send image FINISH.");
-
-                // Sleep, because this thread must wait ChatClientThread to show the message first
-                try {
-                    thread.sleep(500);
-                } catch (InterruptedException e) {
-                    System.out.println("Error : " + e.getMessage());
-                }
 
                 allowReceive = true;
 
@@ -149,15 +148,30 @@ public class Client implements Runnable {
     public static void checkMuscle(){
         muscleData = StartMuscle.getMove();
         try {
+            // true 表示傳送muscleData
             dos.writeBoolean(true);
+            System.out.println("Send Boolean: TRUE");
             dos.writeDouble(muscleData);
-            // sOutput.writeObject(new Message(0, muscleData));
+            System.out.println("Send muscleData: " + muscleData);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static byte[] getReadBuffer(){
-        return readBuffer;
+    private void setByteFile(){
+        System.out.println("Client Thread Lock!");
+        lock.lock();
+        try{
+            System.out.println("Client Thread Await!");
+            condition.await();
+
+            writeBuffer = new byte[CameraSurfaceView.getByteCount()];
+            writeBuffer = CameraSurfaceView.getByteFile();
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }finally {
+            lock.unlock();
+            System.out.println("Client Thread UnLock!");
+        }
     }
 }
