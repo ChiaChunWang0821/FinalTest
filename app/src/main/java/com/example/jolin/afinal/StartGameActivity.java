@@ -132,6 +132,7 @@ public class StartGameActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // 實驗一秒最多可拍幾張
                 openCamera();
+                // Client.checkMuscle();
 
                 /*if(flag == false){
                     flag = true;
