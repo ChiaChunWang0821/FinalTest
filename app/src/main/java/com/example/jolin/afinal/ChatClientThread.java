@@ -1,5 +1,7 @@
 package com.example.jolin.afinal;
 
+import android.os.Message;
+
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -120,6 +122,17 @@ public class ChatClientThread extends Thread {
                     }
                 }
 
+                new Thread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        updateTask();
+                        // StartGameActivity.updateReceivePic();
+                    }
+
+                }).start();
+
                 photoCount++;
 
                 Client.allowReceive = false;
@@ -135,5 +148,15 @@ public class ChatClientThread extends Thread {
 
     public static byte[] getReadBuffer(){
         return readBuffer;
+    }
+
+    private void updateTask()
+    {
+        // if (contentList.size() > 0)
+        {
+            Message msg = new Message();
+            msg.what = StartGameActivity.DO_UPDATE;
+            StartGameActivity.mUpdateHandler.sendMessage(msg);
+        }
     }
 }

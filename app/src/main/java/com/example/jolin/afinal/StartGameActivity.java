@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -64,9 +66,11 @@ public class StartGameActivity extends AppCompatActivity {
 
     private boolean flag = false;
 
-    // private ReadWriteLock rwLock = new ReentrantReadWriteLock();
-    private Lock lock = new ReentrantLock();
-    private int countLock = 0;
+    private static Lock lock = new ReentrantLock();
+    private static int countLock = 0;
+
+    public static Handler mUpdateHandler;
+    public static final int DO_UPDATE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,27 +132,6 @@ public class StartGameActivity extends AppCompatActivity {
                 // 實驗一秒最多可拍幾張
                 openCamera();
 
-                // 請求lock狀態，非lock 就lock 把東西讀走 在unlock
-                // 若未lock，則更新畫面影像
-                // 若正lock，且countLock未超過5，則略過。否則，等到unlock，且更新影像。
-                if(lock.tryLock()){
-                    try{
-                        mShowReceiveImage.setImageBitmap(Bytes2Bimap(ChatClientThread.getReadBuffer()));
-                    }finally {
-                        lock.unlock();
-                    }
-                }
-                else{
-                    countLock++;
-                    if(countLock > 5){
-                        while(!lock.tryLock()){}
-                        lock.lock();
-                        mShowReceiveImage.setImageBitmap(Bytes2Bimap(ChatClientThread.getReadBuffer()));
-                        lock.unlock();
-                        countLock = 0;
-                    }
-                }
-
                 /*if(flag == false){
                     flag = true;
                     mBtnPic.setText("停止");
@@ -179,6 +162,24 @@ public class StartGameActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Connect ENDED!", Toast.LENGTH_LONG).show();
             }
         });
+
+        mUpdateHandler = new Handler()
+        {
+            @Override
+            public void handleMessage(Message msg)
+            {
+                // TODO Auto-generated method stub
+                super.handleMessage(msg);
+                switch (msg.what)
+                {
+                    case DO_UPDATE:
+                        updateReceivePic();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
     }
 
     @Override
@@ -340,7 +341,7 @@ public class StartGameActivity extends AppCompatActivity {
         mShowReceiveImage.setImageBitmap(bitmap);
     }
 
-    private Bitmap Bytes2Bimap(byte[] b) {
+    private static Bitmap Bytes2Bimap(byte[] b) {
         if(b == null){
             return null;
         }
@@ -349,6 +350,28 @@ public class StartGameActivity extends AppCompatActivity {
                 return null;
             }else {
                 return BitmapFactory.decodeByteArray(b, 0, b.length);
+            }
+        }
+    }
+
+    public static void updateReceivePic(){
+        // 若未lock，則lock後，更新畫面影像，再unlock
+        // 若正lock，且countLock未超過5，則略過。否則，等到unlock，做上行步驟
+        if(lock.tryLock()){
+            try{
+                mShowReceiveImage.setImageBitmap(Bytes2Bimap(ChatClientThread.getReadBuffer()));
+            }finally {
+                lock.unlock();
+            }
+        }
+        else{
+            countLock++;
+            if(countLock > 5){
+                while(!lock.tryLock()){}
+                lock.lock();
+                mShowReceiveImage.setImageBitmap(Bytes2Bimap(ChatClientThread.getReadBuffer()));
+                lock.unlock();
+                countLock = 0;
             }
         }
     }
