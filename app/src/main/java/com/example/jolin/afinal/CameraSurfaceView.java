@@ -243,6 +243,9 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 bitmap = Bitmap.createBitmap(bm, 0, 0, width, height, m, true);
 
                 // faceDetect.start(bitmap);
+                new SkinDetect(bitmap);
+                // SkinDetect.RGBskinDetection(bitmap);
+
 
                 System.out.println("执行了吗+3");
                 file = new File(filePath);

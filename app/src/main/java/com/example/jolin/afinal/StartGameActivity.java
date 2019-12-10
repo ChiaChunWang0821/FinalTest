@@ -365,7 +365,7 @@ public class StartGameActivity extends AppCompatActivity {
 
     public static void updateReceivePic(){
         System.out.println("Update Receive Pic!");
-        
+
         // 若未lock，則lock後，更新畫面影像，再unlock
         // 若正lock，且countLock未超過5，則略過。否則，等到unlock，做上行步驟
         if(lock.tryLock()){
