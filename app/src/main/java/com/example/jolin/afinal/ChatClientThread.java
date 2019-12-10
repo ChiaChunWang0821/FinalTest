@@ -127,7 +127,7 @@ public class ChatClientThread extends Thread {
                     @Override
                     public void run()
                     {
-                        updateTask();
+                        updateReceiveTask();
                         // StartGameActivity.updateReceivePic();
                     }
 
@@ -150,12 +150,12 @@ public class ChatClientThread extends Thread {
         return readBuffer;
     }
 
-    private void updateTask()
+    private void updateReceiveTask()
     {
         // if (contentList.size() > 0)
         {
             Message msg = new Message();
-            msg.what = StartGameActivity.DO_UPDATE;
+            msg.what = StartGameActivity.DO_UPDATE_Receive;
             StartGameActivity.mUpdateHandler.sendMessage(msg);
         }
     }

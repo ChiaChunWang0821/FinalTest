@@ -46,7 +46,7 @@ public class StartGameActivity extends AppCompatActivity {
 
     private Button btnDisconnect;
     private Button mBtnPic;
-    private ImageView mShowImage;
+    private static ImageView mShowImage;
     public static ImageView mShowReceiveImage;
     public static String imageFilePath = null;
     public static String imageFileReceivePath = null;
@@ -70,7 +70,8 @@ public class StartGameActivity extends AppCompatActivity {
     private static int countLock = 0;
 
     public static Handler mUpdateHandler;
-    public static final int DO_UPDATE = 1;
+    public static final int DO_UPDATE_Receive = 1;
+    public static final int DO_UPDATE_Original = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,8 +173,11 @@ public class StartGameActivity extends AppCompatActivity {
                 super.handleMessage(msg);
                 switch (msg.what)
                 {
-                    case DO_UPDATE:
+                    case DO_UPDATE_Receive:
                         updateReceivePic();
+                        break;
+                    case DO_UPDATE_Original:
+                        updatePic();
                         break;
                     default:
                         break;
@@ -354,7 +358,14 @@ public class StartGameActivity extends AppCompatActivity {
         }
     }
 
+    public static void updatePic(){
+        System.out.println("Update Pic!");
+        mShowImage.setImageBitmap(Bytes2Bimap(Client.getWriteBuffer()));
+    }
+
     public static void updateReceivePic(){
+        System.out.println("Update Receive Pic!");
+        
         // 若未lock，則lock後，更新畫面影像，再unlock
         // 若正lock，且countLock未超過5，則略過。否則，等到unlock，做上行步驟
         if(lock.tryLock()){

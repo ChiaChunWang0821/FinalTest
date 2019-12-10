@@ -1,5 +1,7 @@
 package com.example.jolin.afinal;
 
+import android.os.Message;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -27,7 +29,7 @@ public class Client implements Runnable {
     private byte[] byteFile = null;
     private static double muscleData;
 
-    private byte[] writeBuffer = null;
+    private static byte[] writeBuffer = null;
     public static Lock lock = new ReentrantLock();
     public static Condition condition = lock.newCondition();
 
@@ -158,6 +160,10 @@ public class Client implements Runnable {
         }
     }
 
+    public static byte[] getWriteBuffer(){
+        return writeBuffer;
+    }
+
     private void setByteFile(){
         System.out.println("Client Thread Lock!");
         lock.lock();
@@ -173,5 +179,22 @@ public class Client implements Runnable {
             lock.unlock();
             System.out.println("Client Thread UnLock!");
         }
+
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                updateTask();
+            }
+
+        }).start();
+    }
+
+    private void updateTask()
+    {
+            Message msg = new Message();
+            msg.what = StartGameActivity.DO_UPDATE_Original;
+            StartGameActivity.mUpdateHandler.sendMessage(msg);
     }
 }
