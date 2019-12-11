@@ -15,11 +15,9 @@ import android.view.SurfaceView;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.google.firebase.ml.vision.common.FirebaseVisionImage;
-
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -39,15 +37,15 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     private int mScreenHeight;
     private CameraTopRectView topView;
 
+    private FaceDetect faceDetect = new FaceDetect();
     //更動
     private String filePath;
     private Activity activity;
 
+    private File file;
+
     private static byte[] byteFile = null;
-
-    private static int byteCount = 0;
-
-    private FirebaseVisionImage image;
+    private static int byteCount;
 
     public CameraSurfaceView(Context context) {
         this(context, null);
@@ -189,7 +187,6 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 }
             }
         }
-
         return result;
     }
 
@@ -223,6 +220,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
             topView.draw(new Canvas());
 
             BufferedOutputStream bos = null;
+            ByteArrayOutputStream baos = null;
             Bitmap bm = null;
             if (data != null) {
             }
@@ -240,32 +238,53 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 int width = bm.getWidth();
                 m.setRotate(-90);
                 //旋转后的图片
+
+
                 bitmap = Bitmap.createBitmap(bm, 0, 0, width, height, m, true);
 
-                processFaceDetect(bitmap);
+                // faceDetect.start(bitmap);
+                new SkinDetect(bitmap);
+                // SkinDetect.RGBskinDetection(bitmap);
+
 
                 System.out.println("执行了吗+3");
-                File file = new File(filePath);
+                file = new File(filePath);
                 if (!file.exists()) {
                     file.createNewFile();
                 }
-                bos = new BufferedOutputStream(new FileOutputStream(file));
+                // bos = new BufferedOutputStream(new FileOutputStream(file));
+                baos = new ByteArrayOutputStream();
 
                 Bitmap sizeBitmap = Bitmap.createScaledBitmap(bitmap,
                         topView.getViewWidth(), topView.getViewHeight(), true);
                 bm = Bitmap.createBitmap(sizeBitmap);// 截取
 
-                bm.compress(Bitmap.CompressFormat.JPEG, 100, bos);//将图片压缩到流中
+                // bm.compress(Bitmap.CompressFormat.JPEG, 70, bos);//将图片压缩到流中
+                bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                //70 是压缩率，表示压缩30%; 如果不压缩是100，表示压缩率为0
+                byteFile = baos.toByteArray();
+                byteCount = byteFile.length;
+                System.out.println("byteCount = " + byteCount);
+                getByteFile();
 
-                byteCount = bm.getByteCount();
-                byteFile = new byte[byteCount];
+                /*byteCount = bm.getByteCount();
+
+                ByteBuffer buf = ByteBuffer.allocate(byteCount);
+                bm.copyPixelsToBuffer(buf);
+
+                byteFile = buf.array();*/
+                // byteFile = new byte[byteCount];
 
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 try {
-                    bos.flush();//输出
-                    bos.close();//关闭
+                    // bos.flush();//输出
+                    // bos.close();//关闭
+
+                    baos.flush();
+                    baos.close();
+
                     bm.recycle();// 回收bitmap空间
                     mCamera.stopPreview();// 关闭预览
                     activity.setResult(Activity.RESULT_OK);
@@ -278,11 +297,6 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         }
     };
 
-    private void processFaceDetect(Bitmap bitmap){
-        FaceDetect faceDetect = new FaceDetect();
-        faceDetect.start(bitmap);
-
-    }
     public void takePicture(Activity activity, String filePath) {
         this.filePath = filePath;
         this.activity = activity;
@@ -301,13 +315,14 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         return byteCount;
     }
     public static byte[] getByteFile(){
+        Client.lock.lock();
+        try{
+            Client.condition.signal();
+            System.out.println("Client Thread Signal!");
+        }finally {
+            Client.lock.unlock();
+        }
         return byteFile;
-    }
-
-    private void imageFromBitmap(Bitmap bitmap) {
-        // [START image_from_bitmap]
-        image = FirebaseVisionImage.fromBitmap(bitmap);
-        // [END image_from_bitmap]
     }
 
 }

@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.android.gms:play-services-vision-common:17.0.2@aar">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/.gradle/caches/transforms-2/files-2.1/12f9784c6b2471aa9b4e0448b0b251dc/jars/classes.jar!/" />
-      <root url="file://$PROJECT_DIR$/.gradle/caches/transforms-2/files-2.1/12f9784c6b2471aa9b4e0448b0b251dc/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9331c7acefab9b88e39b5e35124b1d88/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9331c7acefab9b88e39b5e35124b1d88/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$PROJECT_DIR$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-vision-common/17.0.2/60ff750d6bcc69d8447735711ca788eb3cdfbf39/play-services-vision-common-17.0.2-javadoc.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-vision-common/17.0.2/60ff750d6bcc69d8447735711ca788eb3cdfbf39/play-services-vision-common-17.0.2-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES />
   </library>

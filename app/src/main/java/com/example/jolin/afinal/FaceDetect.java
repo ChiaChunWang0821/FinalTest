@@ -21,7 +21,7 @@ import java.util.List;
 public class FaceDetect {
     private static final String TAG = "FaceDetectionProcessor";
     private FirebaseVisionFaceDetector detector;
-    private GraphicOverlay graphicOverlay;
+    private GraphicOverlay graphicOverlay ;
 
     public  void FaceDetect(){
     }
@@ -74,7 +74,6 @@ public class FaceDetect {
             System.out.println("------------Face Detect Result--------------");
             System.out.println(counter);
             Rect rect = face.getBoundingBox();
-
             FaceGraphic faceGraphic = new FaceGraphic(graphicOverlay, face, CameraSource.CAMERA_FACING_FRONT);
 
             graphicOverlay.add(faceGraphic);

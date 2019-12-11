@@ -1,30 +1,36 @@
 package com.example.jolin.afinal;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.os.Message;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Client implements Runnable {
 
     private String serverName = "140.121.197.165";
     private int serverPort = 5002;
     private Socket socket = null;
-    private Thread thread = null;
-    private OutputStream os = null;
-    private DataOutputStream dos = null;
-    // private FileInputStream fis = null;
+
     private ChatClientThread client = null;
-    // private byte[] buffer;
-    // private File file = null;
-    // private RandomAccessFile rand = null;
-    private int photoCount = 0;
+    private Thread thread = null;
+
+    private OutputStream os = null;
+    private static DataOutputStream dos = null;
+
     public static boolean allowReceive = false;
+
     private int byteCount = 0;
     private byte[] byteFile = null;
+    private static double muscleData;
+
+    private static byte[] writeBuffer = null;
+    public static Lock lock = new ReentrantLock();
+    public static Condition condition = lock.newCondition();
 
     public Client() {
         try {
@@ -33,6 +39,8 @@ public class Client implements Runnable {
             System.out.println("Connected to server " + socket.getRemoteSocketAddress());
 
             os = socket.getOutputStream();
+            dos = new DataOutputStream(os);
+
             client = new ChatClientThread(this, socket);
             thread = new Thread(this);
             thread.start();
@@ -45,69 +53,52 @@ public class Client implements Runnable {
     public void run() {
         System.out.print("----------------ClientThread----------------");
         while (thread != null) {
-            if(photoCount != 0){
-                break;
-            }
-            allowReceive = false;
+            // allowReceive = false;
+
             /*將影像byte讀入，再傳出到Server端*/
             try {
-                /*file = new File(StartGameActivity.imageFilePath);
-                if(!file.exists()){
-                    // 檢查檔案在不在，不在不要做
-                    System.out.println("StartGameActivity.imageFilePath is not exist!");
-                    continue;
+                setByteFile();
+
+                if(lock.tryLock()){
+                    try{
+                        byteFile = writeBuffer;
+                        byteCount = byteFile.length;
+                    }finally {
+                        lock.unlock();
+                    }
                 }
-                rand = new RandomAccessFile(file, "r");*/
-                dos = new DataOutputStream(os);
-                // while((int)rand.length() == 0) { }
-                while(CameraSurfaceView.getByteFile() == null){ }
-                byteCount = CameraSurfaceView.getByteCount();
-                byteFile = CameraSurfaceView.getByteFile();
+
                 try {
                     thread.sleep(100);
                 } catch (InterruptedException e) {
                     System.out.println("Error : " + e.getMessage());
                 }
-                /*dos.writeInt((int)rand.length());
-                System.out.println("Send image file length: " + (int)rand.length());*/
+
+                // false 表示傳送影像array
+                dos.writeBoolean(false);
+                System.out.println("Send Boolean: FALSE");
 
                 dos.writeInt(byteCount);
                 System.out.println("Send image file length: " + byteCount);
-
-                // 拍下影像downsize!!不需要這麼高
                 try {
-                    thread.sleep(500);
+                    thread.sleep(100);
                 } catch (InterruptedException e) {
                     System.out.println("Error : " + e.getMessage());
                 }
 
-                /*buffer = new byte[(int)rand.length()];
-                int count = 0;
-                while(count < (int)rand.length()){
-                    count += rand.read(buffer, count, (int)rand.length() - count);
-                }
-                os.write(buffer);
-                System.out.println("Send image to Server..." + count);*/
+                // 拍下影像downsize!!不需要這麼高
+                System.out.println("Start Send image file");
 
                 os.write(byteFile);
                 os.flush();
-                System.out.println("Send image to Server...");
+                System.out.println("Send image to Server..." + byteFile.length);
 
                 try {
-                    thread.sleep(500);
+                    thread.sleep(100);
                 } catch (InterruptedException e) {
                     System.out.println("Error : " + e.getMessage());
                 }
-                // os.flush();
-                // rand.close();
                 System.out.println("Send image FINISH.");
-
-                // Sleep, because this thread must wait ChatClientThread to show the message first
-                try {
-                    thread.sleep(500);
-                } catch (InterruptedException e) {
-                    System.out.println("Error : " + e.getMessage());
-                }
 
                 allowReceive = true;
 
@@ -116,10 +107,6 @@ public class Client implements Runnable {
                 System.out.println("Error " + e.getMessage());
                 stop();
             }
-
-            photoCount++;
-
-            StartGameActivity.mShowReceiveImage.setImageBitmap(Bytes2Bimap(byteFile));
         }
     }
 
@@ -135,11 +122,55 @@ public class Client implements Runnable {
         client.close();
     }
 
-    private Bitmap Bytes2Bimap(byte[] b) {
-        if (b.length != 0) {
-            return BitmapFactory.decodeByteArray(b, 0, b.length);
-        } else {
-            return null;
+    public static void checkMuscle(){
+        muscleData = StartMuscle.getMove();
+        try {
+            // true 表示傳送muscleData
+            dos.writeBoolean(true);
+            System.out.println("Send Boolean: TRUE");
+            dos.writeDouble(muscleData);
+            System.out.println("Send muscleData: " + muscleData);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    public static byte[] getWriteBuffer(){
+        return writeBuffer;
+    }
+
+    private void setByteFile(){
+        System.out.println("Client Thread Lock!");
+        lock.lock();
+        try{
+            // 鎖空byte，有東西才解
+            System.out.println("Client Thread Await!");
+            condition.await();
+
+            writeBuffer = new byte[CameraSurfaceView.getByteCount()];
+            writeBuffer = CameraSurfaceView.getByteFile();
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }finally {
+            lock.unlock();
+            System.out.println("Client Thread UnLock!");
+        }
+
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                updateTask();
+            }
+
+        }).start();
+    }
+
+    private void updateTask()
+    {
+            Message msg = new Message();
+            msg.what = StartGameActivity.DO_UPDATE_Original;
+            StartGameActivity.mUpdateHandler.sendMessage(msg);
     }
 }
