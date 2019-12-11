@@ -3,10 +3,8 @@ package com.example.jolin.afinal;
 import android.os.Message;
 
 import java.io.DataInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.net.Socket;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -19,9 +17,9 @@ public class ChatClientThread extends Thread {
     // private FileOutputStream fos = null;
     private DataInputStream dis = null;
     private byte[] buffer;
-    private File file = null;
-    private RandomAccessFile rand = null;
-    private int photoCount = 0;
+    // private File file = null;
+    // private RandomAccessFile rand = null;
+    // private int photoCount = 0;
     public static boolean threadStatus = true;
     private double muscleData;
     private int byteLenData = 0;
@@ -43,12 +41,7 @@ public class ChatClientThread extends Thread {
             is = socket.getInputStream();
             dis = new DataInputStream(is);
 
-            file = new File(StartGameActivity.imageFileReceivePath);
-            while(!file.exists()){
-                System.out.println("StartGameActivity.imageFileReceivePath is not exist!");
-                file = new File(StartGameActivity.imageFileReceivePath);
-            }
-            rand = new RandomAccessFile(file, "rw");
+
         } catch (IOException e) {
             System.out.println("Error getting input stream : " + e.getMessage());
             client.stop();
@@ -69,16 +62,21 @@ public class ChatClientThread extends Thread {
         /*從Server傳入影像byte，再輸出成file*/
         try {
             while(threadStatus){
-                if(photoCount != 0){
-                    break;
-                }
-
                 if(Client.allowReceive == false){
                     // 照片還沒被拍下，還沒有影像要傳
                     continue;
                 }
+                System.out.println("Not Yet to Receive");
+
                 // 用lock 鎖住，放到另個地方存(buffer) main thread較順
                 // 收送都要
+
+                /*file = new File(StartGameActivity.imageFileReceivePath);
+                while(!file.exists()){
+                    System.out.println("StartGameActivity.imageFileReceivePath is not exist!");
+                    file = new File(StartGameActivity.imageFileReceivePath);
+                }
+                rand = new RandomAccessFile(file, "rw");*/
 
                 boolean type = dis.readBoolean();
                 if(type == true){ // true 表示收到muscleData
@@ -88,7 +86,7 @@ public class ChatClientThread extends Thread {
                     byteLenData = dis.readInt();
                     System.out.println("Receive image file length: " + byteLenData);
                     try {
-                        sleep(500);
+                        sleep(100);
                     } catch (InterruptedException e) {
                         System.out.println("Error : " + e.getMessage());
                     }
@@ -100,17 +98,16 @@ public class ChatClientThread extends Thread {
                         count += is.read(buffer, count, byteLenData - count);
                     }
                     lock.unlock();
-                    rand.write(buffer); //Writes bytes to output stream
+                    // rand.write(buffer); //Writes bytes to output stream
                     System.out.println("Receive image from Server..." + count);
 
                     try {
-                        sleep(500);
+                        sleep(100);
                     } catch (InterruptedException e) {
                         System.out.println("Error : " + e.getMessage());
                     }
 
-                    // fos.flush();
-                    rand.close();
+                    // rand.close();
                     System.out.println("Receive image FINISH.");
                 }
 
@@ -128,12 +125,9 @@ public class ChatClientThread extends Thread {
                     public void run()
                     {
                         updateReceiveTask();
-                        // StartGameActivity.updateReceivePic();
                     }
 
                 }).start();
-
-                photoCount++;
 
                 Client.allowReceive = false;
             }
@@ -152,11 +146,8 @@ public class ChatClientThread extends Thread {
 
     private void updateReceiveTask()
     {
-        // if (contentList.size() > 0)
-        {
-            Message msg = new Message();
-            msg.what = StartGameActivity.DO_UPDATE_Receive;
-            StartGameActivity.mUpdateHandler.sendMessage(msg);
-        }
+        Message msg = new Message();
+        msg.what = StartGameActivity.DO_UPDATE_Receive;
+        StartGameActivity.mUpdateHandler.sendMessage(msg);
     }
 }
