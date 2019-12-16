@@ -22,7 +22,7 @@ public class Client implements Runnable {
     private OutputStream os = null;
     private static DataOutputStream dos = null;
 
-    public static boolean allowReceive = false;
+    // public static boolean allowReceive = false;
 
     private int byteCount = 0;
     private byte[] byteFile = null;
@@ -100,7 +100,14 @@ public class Client implements Runnable {
                 }
                 System.out.println("Send image FINISH.");
 
-                allowReceive = true;
+                // allowReceive = true;
+                ChatClientThread.lock.lock();
+                try{
+                    ChatClientThread.condition.signal();
+                    System.out.println("ChatClientThread Signal!");
+                }finally {
+                    ChatClientThread.lock.unlock();
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -114,7 +121,7 @@ public class Client implements Runnable {
         try {
             thread = null;
             os.close();
-            ChatClientThread.threadStatus = false;
+            // ChatClientThread.threadStatus = false;
             socket.close();
         } catch (IOException e) {
             System.out.println("Error closing : " + e.getMessage());

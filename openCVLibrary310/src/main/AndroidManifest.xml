@@ -3,9 +3,4 @@
       package="org.opencv"
       android:versionCode="3100"
       android:versionName="3.1.0">
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 2bf522320e708bd6609f119a06b80c642a701d12
 </manifest>

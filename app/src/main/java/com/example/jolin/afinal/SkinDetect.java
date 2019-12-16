@@ -33,26 +33,32 @@ public class SkinDetect extends Thread{
                 green = Color.green(colour);
                 blue = Color.blue(colour);
 
-                if(red > 95 && blue > 20 && green > 40){
+                Color.RGBToHSV(red, green, blue, hsv);
+                ReduceSaturation();
+                Color.HSVToColor(hsv);
+
+                /*if(red > 95 && blue > 20 && green > 40){
                     if(red > green && red > blue){
                         if(red - Math.min(green, blue) > 15){
                             if(Math.abs(red - green) > 15){
                                 // System.out.println("Red: " + red + ", Green: " + green + ", Blue: " + blue);
 
                                 Color.RGBToHSV(red, green, blue, hsv);
-                                /*System.out.println("hsv!!!");
-                                System.out.println(hsv[0]);
-                                System.out.println(hsv[1]);
-                                System.out.println(hsv[2]);*/
+                                // System.out.println("hsv!!!");
+                                // System.out.println(hsv[0]);
+                                // System.out.println(hsv[1]);
+                                // System.out.println(hsv[2]);
 
                                 ReduceSaturation();
-                                /*if(StartMuscle.getMove() > 25){
-                                    ReduceSaturation();
-                                }*/
+                                // if(StartMuscle.getMove() > 25){
+                                //     ReduceSaturation();
+                                // }
+
+                                Color.HSVToColor(hsv);
                             }
                         }
                     }
-                }
+                }*/
             }
         }
         System.out.println("Skin Finish!!!");
@@ -62,5 +68,6 @@ public class SkinDetect extends Thread{
         // System.out.println("hsv!!!");
         // System.out.println(hsv[1]);
         // hsv[1] /= 2.0;
+        hsv[1] = 0;
     }
 }
