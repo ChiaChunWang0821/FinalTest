@@ -14,7 +14,7 @@ public class Client implements Runnable {
 
     private String serverName = "140.121.197.165";
     private int serverPort = 5002;
-    private Socket socket = null;
+    public static Socket socket = null;
 
     private ChatClientThread client = null;
     private Thread thread = null;

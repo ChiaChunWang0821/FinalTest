@@ -64,7 +64,7 @@ public class StartGameActivity extends AppCompatActivity {
     private TimerTask timerTask;
     private Date date;
 
-    private boolean flag = false;
+    private boolean flag;
 
     private static Lock lock = new ReentrantLock();
     private static int countLock = 0;
@@ -121,8 +121,13 @@ public class StartGameActivity extends AppCompatActivity {
         }
 
         client = new Client();
-        Toast.makeText(getApplicationContext(), "Connect SUCCESS!", Toast.LENGTH_LONG).show();
-
+        if(Client.socket != null) {
+            Toast.makeText(getApplicationContext(), "Connect SUCCESS!", Toast.LENGTH_LONG).show();
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Connect FAILED!", Toast.LENGTH_LONG).show();
+        }
+        flag = false;
         // cachedThreadPool.execute(new StartMuscle());
     }
 
