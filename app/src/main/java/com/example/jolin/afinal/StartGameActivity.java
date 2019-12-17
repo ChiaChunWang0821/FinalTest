@@ -61,8 +61,8 @@ public class StartGameActivity extends AppCompatActivity {
     private File photoReceiveFile = null;
 
     private Timer timer;
-    private TimerTask timerTask;
-    private Date date;
+    // private TimerTask timerTask;
+    // private Date date;
 
     private boolean flag;
 
@@ -136,8 +136,27 @@ public class StartGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // 實驗一秒最多可拍幾張
-                openCamera();
+                // openCamera();
                 // Client.checkMuscle();
+
+                if(!flag){
+                    flag = true;
+                    timer = new Timer(); // 建立一個Timer物件
+                    TimerTask openCam = new TimerTask() {
+                        @Override
+                        public void run() {
+                            System.out.println(new Date()); // 輸出時間
+                            openCamera();
+                        }
+                    };
+                    timer.schedule(openCam, 1000, 15000); // 1秒後開始，之後每過15秒再執行
+                    System.out.println("OpenCam start after 1 sec");
+                }
+                else{
+                    flag = false;
+                    timer.cancel();
+                }
+
 
                 /*if(flag == false){
                     flag = true;
@@ -151,11 +170,11 @@ public class StartGameActivity extends AppCompatActivity {
                             openCamera();
                             // Client.checkMuscle();
                         }
-                    }, 0, 1000); //在0秒後執行此任務,每次間隔1秒
+                    }, 0, 5000); //在0秒後執行此任務,每次間隔5秒
                 }
                 else{
                     flag = false;
-                    mBtnPic.setText("拍照");
+                    mBtnPic.setText("開始");
                     timer.cancel();
                     System.out.println("STOP");
                 }*/
@@ -165,6 +184,8 @@ public class StartGameActivity extends AppCompatActivity {
         btnDisconnect.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
+                timer.cancel();
+
                 client.stop();
                 Toast.makeText(getApplicationContext(), "Connect ENDED!", Toast.LENGTH_LONG).show();
             }
@@ -365,12 +386,13 @@ public class StartGameActivity extends AppCompatActivity {
     }
 
     public static void updatePic(){
-        System.out.println("Update Pic!");
+        System.out.println("Ready to Update Pic!");
         mShowImage.setImageBitmap(Bytes2Bimap(Client.getWriteBuffer()));
+        System.out.println("Update Pic Finish!!!");
     }
 
     public static void updateReceivePic(){
-        System.out.println("Update Receive Pic!");
+        System.out.println("Ready to Update Receive Pic!");
 
         // 若未lock，則lock後，更新畫面影像，再unlock
         // 若正lock，且countLock未超過5，則略過。否則，等到unlock，做上行步驟
@@ -391,5 +413,7 @@ public class StartGameActivity extends AppCompatActivity {
                 countLock = 0;
             }
         }
+
+        System.out.println("Update Receive Pic Finish!!!");
     }
 }

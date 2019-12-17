@@ -71,7 +71,7 @@
         android:layout_below="@+id/show_image"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="12dp"
-        android:text="拍照"
+        android:text="開始"
         app:layout_constraintBottom_toTopOf="@+id/disconnect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
