@@ -34,6 +34,10 @@
         android:name="android.hardware.camera.front.autofocus"
         android:required="false" />
 
+    <meta-data
+        android:name = "com.google.firebase.ml.vision.DEPENDENCIES"
+        android:value = "face"
+        />
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon"

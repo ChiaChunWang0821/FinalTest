@@ -2,6 +2,7 @@ package com.example.jolin.afinal;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -239,11 +240,18 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 m.setRotate(-90);
                 //旋转后的图片
 
+                Bitmap iconbitmap = BitmapFactory.decodeResource(getResources() , R.drawable.light);
 
                 bitmap = Bitmap.createBitmap(bm, 0, 0, width, height, m, true);
 
+                //bitmap = bitmap.copy(Bitmap.Config.RGB_565, true);
+
+
+
+                //Bitmap editbitmap = toeditBitmap(bitmap);
+                Bitmap editbitmap = toConformBitmap(bitmap,iconbitmap);
                 // faceDetect.start(bitmap);
-                new SkinDetect(bitmap);
+                // new SkinDetect(bitmap);
                 // SkinDetect.RGBskinDetection(bitmap);
 
 
@@ -255,7 +263,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 // bos = new BufferedOutputStream(new FileOutputStream(file));
                 baos = new ByteArrayOutputStream();
 
-                Bitmap sizeBitmap = Bitmap.createScaledBitmap(bitmap,
+                Bitmap sizeBitmap = Bitmap.createScaledBitmap(editbitmap,
                         topView.getViewWidth(), topView.getViewHeight(), true);
                 bm = Bitmap.createBitmap(sizeBitmap);// 截取
 
@@ -324,5 +332,38 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         }
         return byteFile;
     }
+    private Bitmap toeditBitmap(Bitmap bitmap) throws InterruptedException {
+        Resources pathname = getResources();
+        Editface editface = new Editface(bitmap, pathname);
+        Thread t = new Thread(editface);
+        System.out.println("-------start edit ---------------");
+        t.setName("Editpic");
+        t.start();
 
+
+        Bitmap edited = editface.getEditpic();
+        return  edited;
+    }
+
+    public static Bitmap toConformBitmap(Bitmap background, Bitmap foreground) {
+        System.out.println("start conform");
+        if (background == null) {
+            return null;
+        }
+
+        int bgWidth = background.getWidth();
+        int bgHeight = background.getHeight();
+        //create the new blank bitmap
+        Bitmap newbmp = Bitmap.createBitmap(bgWidth, bgHeight, Bitmap.Config.ARGB_8888);
+        Canvas cv = new Canvas(newbmp);
+        //draw bg into
+        cv.drawBitmap(background, 0, 0, null);//在 0，0座標開始畫入bg
+        //draw fg into
+        cv.drawBitmap(foreground, 0, 0, null);//從任意位置畫
+        //save all clip
+        cv.save(Canvas.ALL_SAVE_FLAG);//保存
+        //store
+        cv.restore();//存储
+        return newbmp;
+    }
 }

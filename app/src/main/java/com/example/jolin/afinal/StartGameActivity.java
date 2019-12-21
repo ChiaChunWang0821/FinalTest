@@ -29,7 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
@@ -136,10 +135,10 @@ public class StartGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // 實驗一秒最多可拍幾張
-                // openCamera();
+                openCamera();
                 // Client.checkMuscle();
 
-                if(!flag){
+                /*if(!flag){
                     flag = true;
                     timer = new Timer(); // 建立一個Timer物件
                     TimerTask openCam = new TimerTask() {
@@ -155,7 +154,7 @@ public class StartGameActivity extends AppCompatActivity {
                 else{
                     flag = false;
                     timer.cancel();
-                }
+                }*/
 
 
                 /*if(flag == false){
